@@ -338,6 +338,7 @@ list_item_target = {
 	--0xAC, -- no wild 'mon's upgrade
 	0xAE, -- furrets' gold berry
 } -- {}: no list is set;
+level_target = 50 -- for walkfordaycare().
 IDNo_target = 0 -- 0: no ID No. is targeted;
 list_IDNo_target = {
 	1, 2, 3, -- Red came 1st in RGBY, Ethan, 2nd in GS, Kris, 3rd in C...
@@ -997,6 +998,126 @@ function stop(message)
 	print("Stopped the script.")
 	pause()
 	error(message)
+end
+
+function transliterate_kana_into_romaji(string_kana)
+	local function find_romaji(table_kana, kana)
+		for _, romaji in ipairs(table_kana) do
+			if romaji[ 1 ][ 1 ] == kana or romaji[ 1 ][ 2 ] == kana then
+				return romaji[ 2 ]
+			end
+		end
+		return nil
+	end
+
+	local kana = {
+		{{"あ", "ア"},   "a"}, {{"か", "カ"},  "ka"}, {{"さ", "サ"},  "sa"}, {{"た", "タ"},  "ta"}, {{"な", "ナ"},  "na"}, {{"は", "ハ"},  "ha"}, {{"ま", "マ"},  "ma"}, {{"や", "ヤ"},  "ya"}, {{"ら", "ラ"},  "ra"},
+		{{"い", "イ"},   "i"}, {{"き", "キ"},  "ki"}, {{"し", "シ"}, "shi"}, {{"ち", "チ"}, "chi"}, {{"に", "ニ"},  "ni"}, {{"ひ", "ヒ"},  "hi"}, {{"み", "ミ"},  "mi"}, {{"ゆ", "ユ"},  "yu"}, {{"り", "リ"},  "ri"},
+		{{"う", "ウ"},   "u"}, {{"く", "ク"},  "ku"}, {{"す", "ス"},  "su"}, {{"つ", "ツ"}, "tsu"}, {{"ぬ", "ヌ"},  "nu"}, {{"ふ", "フ"},  "fu"}, {{"む", "ム"},  "mu"}, {{"よ", "ヨ"},  "yo"}, {{"る", "ル"},  "ru"},
+		{{"え", "エ"},   "e"}, {{"け", "ケ"},  "ke"}, {{"せ", "セ"},  "se"}, {{"て", "テ"},  "te"}, {{"ね", "ネ"},  "ne"}, {{"へ", "ヘ"},  "he"}, {{"め", "メ"},  "me"}, {{"わ", "ワ"},  "wa"}, {{"れ", "レ"},  "re"},
+		{{"お", "オ"},   "o"}, {{"こ", "コ"},  "ko"}, {{"そ", "ソ"},  "so"}, {{"と", "ト"},  "to"}, {{"の", "ノ"},  "no"}, {{"ほ", "ホ"},  "ho"}, {{"も", "モ"},  "mo"}, {{"ん", "ン"},   "n"}, {{"ろ", "ロ"},  "ro"},
+		{{"ゃ", "ャ"},  "ya"}, {{"ゅ", "ュ"},  "yu"}, {{"ょ", "ョ"},  "yo"}, {{"っ", "ッ"},    ""}, {{"ﾞ", "ﾞ"},    ""}, {{"ﾟ", "ﾟ"},    ""}, {{ "", "ー"},    ""}, {{"　", "　"},   " "}, {{"円", "円"},  "en"},
+		{{"が", "ガ"},  "ga"}, {{"ざ", "ザ"},  "za"}, {{"だ", "ダ"},  "da"}, {{"ば", "バ"},  "ba"}, {{"ぱ", "パ"},  "pa"},
+		{{"ぎ", "ギ"},  "gi"}, {{"じ", "ジ"},  "ji"}, {{"ぢ", "ヂ"},  "ji"}, {{"び", "ビ"},  "bi"}, {{"ぴ", "ピ"},  "pi"},
+		{{"ぐ", "グ"},  "gu"}, {{"ず", "ズ"},  "zu"}, {{"づ", "ヅ"},  "zu"}, {{"ぶ", "ブ"},  "bu"}, {{"ぷ", "プ"},  "pu"},
+		{{"げ", "ゲ"},  "ge"}, {{"ぜ", "ゼ"},  "ze"}, {{"で", "デ"},  "de"}, {{"べ", "ベ"},  "be"}, {{"ぺ", "ペ"},  "pe"},
+		{{"ご", "ゴ"},  "go"}, {{"ぞ", "ゾ"},  "zo"}, {{"ど", "ド"},  "do"}, {{"ぼ", "ボ"},  "bo"}, {{"ぽ", "ポ"},  "po"}
+	}
+	local youon = {
+		{{"きゃ", "キャ"}, "kya"}, {{"きゅ", "キュ"}, "kyu"}, {{"きょ", "キョ"}, "kyo"},
+		{{"しゃ", "シャ"}, "sha"}, {{"しゅ", "シュ"}, "shu"}, {{"しょ", "ショ"}, "sho"},
+		{{"ちゃ", "チャ"}, "cha"}, {{"ちゅ", "チュ"}, "chu"}, {{"ちょ", "チョ"}, "cho"},
+		{{"にゃ", "ニャ"}, "nya"}, {{"にゅ", "ニュ"}, "nyu"}, {{"にょ", "ニョ"}, "nyo"},
+		{{"ひゃ", "ヒャ"}, "hya"}, {{"ひゅ", "ヒュ"}, "hyu"}, {{"ひょ", "ヒョ"}, "hyo"},
+		{{"みゃ", "ミャ"}, "mya"}, {{"みゅ", "ミュ"}, "myu"}, {{"みょ", "ミョ"}, "myo"},
+		{{"りゃ", "リャ"}, "rya"}, {{"りゅ", "リュ"}, "ryu"}, {{"りょ", "リョ"}, "ryo"},
+		{{"ぎゃ", "ギャ"}, "gya"}, {{"ぎゅ", "ギュ"}, "gyu"}, {{"ぎょ", "ギョ"}, "gyo"},
+		{{"じゃ", "ジャ"},  "ja"}, {{"じゅ", "ジュ"},  "ju"}, {{"じょ", "ジョ"},  "jo"},
+		{{"ぢゃ", "ヂャ"},  "ja"}, {{"ぢゅ", "ヂュ"},  "ju"}, {{"ぢょ", "ヂョ"},  "jo"},
+		{{"びゃ", "ビャ"}, "bya"}, {{"びゅ", "ビュ"}, "byu"}, {{"びょ", "ビョ"}, "byo"},
+		{{"ぴゃ", "ピャ"}, "pya"}, {{"ぴゅ", "ピュ"}, "pyu"}, {{"ぴょ", "ピョ"}, "pyo"}
+	}
+	local characters_kana = {}
+	local string_romaji = ""
+	local index = 1
+	local sokuon = false
+	local character
+	local romaji
+	local consonant
+	local romaji_next
+
+	for character in string.gmatch(string_kana, "[%z\1-\127\194-\244][\128-\191]*") do
+		characters_kana[ #characters_kana + 1 ] = character
+	end
+	while index <= #characters_kana do
+		character = characters_kana[ index ]
+		if character == "っ" or character == "ッ" then
+			sokuon = true
+			index = index + 1
+		else
+			romaji = nil
+			if index < #characters_kana then
+				romaji = find_romaji(youon, character .. characters_kana[ index + 1 ])
+				if romaji then
+					index = index + 2
+				end
+			end
+			if not romaji then
+				romaji = find_romaji(kana, character) or character
+				index = index + 1
+			end
+			if sokuon then
+				consonant = romaji:match("^([^aeiou])")
+				if consonant then
+					string_romaji = string_romaji .. consonant
+				end
+				sokuon = false
+			end
+			if romaji == "n" and index <= #characters_kana then
+				romaji_next = find_romaji(youon, characters_kana[ index ] .. (characters_kana[ index + 1 ] or "")) or find_romaji(kana, characters_kana[ index ])
+				if romaji_next and romaji_next:match("^[aeiouy]") then
+					romaji = "n'"
+				end
+			end
+			string_romaji = string_romaji .. romaji
+		end
+	end
+	return string_romaji
+end
+-- https://www.bunka.go.jp/kokugo_nihongo/sisaku/joho/joho/kijun/naikaku/roma/index2.html, Romanization Rules (Cabinet Notification No. 4),            Agency for Cultural Affairs, Government of Japan,                     December 22, 2025
+-- https://www.bunka.go.jp/seisaku/kokugo_nihongo/kokugo_shisaku/pdf/94336801_01.pdf,      Q&A on the Romanization Rules (Cabinet Notification No. 4), Agency for Cultural Affairs, Government of Japan,                     2025
+-- https://www.bunka.go.jp/seisaku/bunkashingikai/kokugo/hokoku/,                          Revised Romanization Rules (Report),                        Council for Cultural Affairs, Agency for Cultural Affairs,            August 20, 2025
+-- https://www.gsi.go.jp/REPORT/JIHO/vol108-8.html,                                        Romanization rules for Japanese geographical names,         Geospatial Information Authority of Japan (GSI), Government of Japan
+
+function capitalize_name(string_originaltrainer)
+	local function uppercase(character)
+		return string.upper(character)
+	end
+	local function lowercase(character)
+		return string.lower(character)
+	end
+
+	local string_name = ""
+	local capitalize_next = true
+	local index
+	local character
+
+	for index = 1, string.len(string_originaltrainer) do
+		character = string.sub(string_originaltrainer, index, index)
+		if character:match("%a") then
+			if capitalize_next then
+				character = uppercase(character)
+				capitalize_next = false
+			else
+				character = lowercase(character)
+			end
+		end
+		string_name = string_name .. character
+		if character == " " or character == "-" then
+			capitalize_next = true
+		end
+	end
+	return string_name
 end
 
 function read_IS( address_IS )
@@ -1843,6 +1964,56 @@ function walktogether() --befriend()
 	else
 		stop( string.format("Don't know the version %4x.", version_byte ) )
 	end
+end
+
+function walkfordaycare()
+	if     game == "RGBY" then
+		if --
+			stop( string.format("Don't know the version %4x.", version_byte ) )
+		end
+	elseif game == "GSC"  then
+		if --
+			stop( string.format("Don't know the version %4x.", version_byte ) )
+		end
+	end
+
+	local address_nickname_mon_daycare
+	if     game == "RGBY" then
+		address_nickname_mon_daycare = 0xDA49
+		--
+	elseif game == "GSC"  then
+		local address_nickname_mon_1_daycare = --
+		local address_nickname_mon_2_daycare = --
+		--
+	end
+	
+	if     game == "GSC"  then
+		mon_1_OT = --
+		mon_1_IDNo = --
+		mon_2_OT = --
+		mon_2_IDNo = --
+		if level_target <= level_mon_1 or level_target <= level_mon_2 then
+			--
+		end
+		if level_mon_1 == level_target then
+			mon_OT = mon_1_OT
+			mon_IDNo = mon_1_IDNo
+		elseif level_mon_2 == level_target then
+			mon_OT = mon_2_OT
+			mon_IDNo = mon_2_IDNo
+		end
+	end
+	if game == "RGBY" then
+		mon_OT = 
+		mon_IDNo = 
+		if level_target <= level_mon_1 or level_target <= level_mon_2 then
+			--
+		end
+	end
+	print(string.format("Got the day care to train %s's %s to level %d.", mon_, level_target ))
+	state = savestate.create()
+	savestate.save( state )
+
 end
 
 function id() --get_IDd()
@@ -2980,6 +3151,8 @@ function do_mode() -- DoCode? Ha ha!
 		hatch() -- works with GSC.
 	elseif mode == "walktogether" then
 		walktogether() -- works with Y and GSC.
+	elseif mode == "walkfordaycare" then
+		walkfordaycare() -- works with RGBY.
 	else
 		stop("Don't know the mode " .. tostring( mode ) .. ".")
 	end
