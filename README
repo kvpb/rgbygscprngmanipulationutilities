@@ -1,0 +1,1006 @@
+Caution. These RNG manipulation utilities will not make you win seven million
+seven hundred seventy-seven thousand seven hundred seventy-seven bucks IRL, nor
+a house in Hawaii nor a motorway slip road. Deal with it.
+Attention. Ces utilities de manipulation du RNG ne vous feront pas gagner sept
+millions sept cent soixante-dix-sept mille sept cent soixante-dix-sept balles
+en vrais dollars IRL, ni une baraque à Hawaï ni une bretelle d'autoroute.
+Démerdez-vous avec ça.
+
+                      Karl Vincent Pierre Bertin `kvpb`'s
+                           Thomas  George West   `ktgw`
+                      カール・ビンセント・ピエール・ベルティン　の
+                      　　　　　トーマス・ジョージ・ウェスト
+                      Pocket Monsters Red & Green,
+                      ポケットモンスター　赤・緑、
+                                      Blue and
+                      　　　　　　　　　　青と
+                                      Yellow
+                      　　　　　　　　　　ピカチュウ
+                                  and Gold & Silver and
+                      　　　　　　　　　と金・銀と
+                                      Crystal Version
+                      　　　　　　　　　　クリスタルバージョン
+                            PRNG manipulation utilities
+                      　　　擬似乱数生成器操作用ユーティリティ
+
+E N G L I S H 
+       English
+
+This software is an automation script^1 in Lua^9 for Pokémon Red Version, Green
+Version, Blue Version, Yellow Version: Special Pikachu Edition, Gold Version,
+Silver Version and Crystal Version and VisualBoyAdvance-ReRecording (VBA-RR)^2.
+It requires a ROM of one of these games, VBA-ReRecording 23.6 (SVN 480) and a
+32-bit version of Windows or a 64-bit version of Windows with the
+Windows-32-on-Windows-64 (WOW64) subsystem. You may set it up with the
+explorer^3 and notepad^4 of Windows and use it via a Lua script window of the
+Lua scripting tool of VBA-RR on one of these games.
+
+S E T   U P 
+      set up
+
+  0  Install VisualBoyAdvance-ReRecording 23.6 (SVN 480)^2, and ensure the
+     Windows notepad^4 is installed.
+  1  Get my G1 & G2 RNG manipulation utilities^5, take the Lua file^6 from the
+     archive, and put them in the folder for Lua scripts of VBA-RR^7.
+  2  Launch VBA-RR, start its Lua stand-alone interpreter^8, browse the folder
+     for the script, and edit its 'parameter' variables^10, or run it at the
+     right moment of the game.
+
+U S E 
+   use
+
+The script can't be controlled interactively. As it's gotta be set with
+variables entirely, it's controlled by modes. Before you run the script, you
+select the mode through its variable.
+
+kvpbsg1ng2rngmanipulationbot.lua
+line 1    mode = "encounter"
+
+All 'parameter variables' must be set in the Lua file itself. The mode
+determines the parameter variables in use; different modes may rely on
+different parameter variables. Right away in this manual-page-like section of
+the read-me file follow all parameter variables or constants and their values.
+    You must get the game in the last stable state before interaction for the
+result, e.g. DV spread, 'mon capture, wild 'mon's item, egg eclosion,
+friendship level... The script must then be ran at that moment, not too
+earlier, nor any later. It then interacts with the game, reads the memory,
+rejects failures, reloads the state, advances the game, rinses, repeats, until
+it succeeds in hitting a frame of your target result.
+    The script may need to run for a while. VBA-RR may be set to get the game
+to run much faster: unsynchronize the emulation speed, skip 9 out of 10
+frames, speed it up to 1000%, scale the window down to 1 time, and disable the
+sound.^11
+
+'PARAMETER' VARIABLES
+
+     mode
+     ... Sets the script to interact with the game in a certain way.
+     values:
+          "id",
+          "get",
+          "catch",
+          "breed",
+          "encounter",
+          "fish",
+          "smash",
+          "headbutt",
+          "trade",
+          "battle",
+          "hold",
+          "unown",
+          "raikouenteisuicune",
+          "suicune",
+          "glitch",
+          "yellowmew",
+          "gengar",
+          "mewtwomoltres",
+          "count",
+          "lay",
+          "hatch",
+          "walktogether";
+
+     flag_pause_uponhit
+     ... Sets pausing the emulation, when we've succeeded.
+      values:
+          true,
+          false;
+
+     flag_Lapras
+     ... Sets the script to battle Lapras.
+      values:
+          true,
+          false;
+
+     DV_target
+     ... Sets usual DV targets.
+     values:
+          "color", "altcolor" or "shiny" for any alt. color 'mon,
+          "flawless" or
+          "flawlessdark" for a flawless, dark-type hidden power 'mon,
+          "colorflawless", for any '(near-)flawless' alt. color 'mon,
+          "flawlessdragon",
+          "flawlessice",
+          "flawlesspsychic",
+          "flawlesselectric",
+          "flawlessgrass",
+          "flawlesswater",
+          "flawlessfire",
+          "flawlesssteel",
+          "flawlessghost",
+          "flawlessbug",
+          "flawlessrock",
+          "flawlessground",
+          "flawlesspoison",
+          "flawlessflying",
+          "flawlessfighting",
+          "colorflawlessgrass",
+          "colorflawlessdragon";
+
+     DV_ATKDEF &
+     DV_SPDSPC
+     ... Set a DV spread by bytes.
+     values: [ 0x00, 0xFF ];
+
+     DV_ATK,
+     DV_DEF,
+     DV_SPD &
+     DV_SPC
+     ... Set a DV spread by values.
+     values: [  0, 15 ];
+
+     species_target
+     ... Sets a target species.
+     values:
+          -1,
+          any index of a species ( [   1, 250 ] );
+
+     list_species_target
+     ... Sets several target species.
+     values:
+          1,
+          2...
+          250;
+
+     list_species_DV_target
+     ... Sets the target species and DV together. This parameter overrides
+     independent species and DV targets.
+     values:
+          species,
+          DV_ATKDEF and
+          DV_SPDSPC;
+
+ACTION ROUTINES (SCRIPT MODES)
+
+     id
+     ... Sets the script to get target trainer IDs.
+     ... Stops, when the target trainer ID has been obtained.
+     The script in this mode is run with the cursor over 'NEW GAME'.
+     mode parameter variables:
+          TID_target,
+          list_TID_target;
+
+     get
+     ... Sets the script to get gift 'mon with target DV spreads.
+     ... Stops, when a target DV spread has been found.
+     The script in this mode is run on the last stable state before the 'mon is
+     gifted, or rather its DV spread calculated, in RGBY at the prompt for a
+     nickname with the cursor over 'NO'.
+     mode parameter variables:
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC;
+
+     catch
+     ... Sets the script to catch the wild 'mon.
+     ... Works with GSC only.
+     ... Stops, when the wild 'mon has been caught.
+     The script in this mode is run with the cursor over 'USE' on a ball,
+     before you throw the ball.
+     mode parameter variables: flag_pause_uponhit;
+
+     breed
+     ... Sets the script to breed 'mons for an egg with target DV spreads.
+     ... Works with GSC only.
+     ... Stops, when the target DV spread has been calculated.
+     The script in this mode is run at the end of the first string of text of
+     the dialog after the party screen for the selection of the second parent
+     in the day care.
+     mode parameter variables:
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC;
+
+     encounter
+     ... Sets the script to make you walk for target species and DV spreads.
+     ... Stops, when the target species and DV spread have been found.
+     The script in this mode is run on a tile from which movement may generate
+     a wild encounter. The bot makes you walks right first in GSC.
+     mode parameter variables:
+          species_target,
+          list_species_target,
+          list_species_DV_target,
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC,
+          code_direction;
+
+     fish
+     ... Sets the script to fish for certain species and DV spreads.
+     ... Stops, when the target species and DV spread have been found.
+     The script in this mode is run with the cursor over Use before using the
+     rod.
+     mode parameter variables:
+          species_target,
+          list_species_target,
+          list_species_DV_target,
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC;
+
+     smash
+     ... Sets the script to smash rocks for certain species and DV spreads.
+     ... Works with GSC only.
+     ... Stops, when the target species and DV spread have been found.
+     The script in this mode is run on the last stable state before Rock Smash
+     is used on the rock.
+     mode parameter variables:
+          species_target,
+          list_species_target,
+          list_species_DV_target,
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC;
+
+     headbutt
+     ... Sets the script to headbutt trees for certain species and DV spreads.
+     ... Works with GSC only.
+     ... Stops, when the target species and DV spread have been found.
+     The script in this mode is run on the last stable state before action on
+     the tree.
+     mode parameter variables:
+          species_target,
+          list_species_target,
+          list_species_DV_target,
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC;
+
+     trade
+     ... Sets the script to trade 'mon for certain DV spreads.
+     ... Works with RGBY only.
+     ... Stops, when the target DV spread has been found.
+     The script in this mode is run before the last input before the trade
+     animation, around the link cable text.
+     mode parameter variables:
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC;
+
+     battle
+     ... Sets the script to start battles for certain DV spreads.
+     ... Stops, when the target DV spread has been found.
+     The script in this mode is run on the cry text or the last stable state
+     before the battle.
+     mode parameter variables:
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC,
+          flag_Lapras;
+
+     hold
+     ... Sets the script to encounter wild 'mon for certain held items.
+     ... Works with GSC only.
+     ... Stops, when the target held item has been found.
+     The script in this mode is run on a tile from which movement may generate
+     a wild encounter.
+     mode parameter variables:
+          item_target,
+          species_target,
+          list_species_target;
+
+     unown
+     ... Sets the script to encounter Unown for certain letters and DV spreads.
+     ... Works with GSC only.
+     ... Stops, when the target letter and DV spread have been found.
+     The script in this mode is run on a tile from which movement may generate
+     an Unown encounter.
+     mode parameter variables:
+          letter_unown_target,
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC;
+
+     raikouenteisuicune
+     ... Sets the script to release roamers for certain DV spreads.
+     ... Works with Gold and Silver only.
+     ... Stops, when the target DV spread has been found.
+     The script in this mode is run on the last stable state before roaming
+     beast generation.
+     mode parameter variables:
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC;
+
+     suicune
+     ... Sets the script to start Suicune battles for certain DV spreads.
+     ... Works with Crystal only.
+     ... Stops, when the target DV spread has been found.
+     The script in this mode is run on the last stable state before the Suicune
+     battle.
+     mode parameter variables:
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC;
+
+     glitch
+     ... Sets the script to trigger long-range Trainer-Fly glitch battles for
+     certain species and DV spreads.
+     ... Works with RGBY only.
+     ... Stops, when the target species and DV spread have been found.
+     The script in this mode is run on the last stable state before the glitch
+     battle.
+     mode parameter variables:
+          species_target,
+          list_species_target,
+          list_species_DV_target,
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC;
+
+     yellowmew
+     ... Sets the script to trigger Yellow Mew encounters for certain DV
+     spreads.
+     ... Works with Yellow only.
+     ... Stops, when the target DV spread has been found.
+     The script in this mode is run on the last stable state before the Mew
+     encounter.
+     mode parameter variables:
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC;
+
+     gengar
+     ... Sets the script to start Gengar battles for certain DV spreads.
+     ... Works with RGBY only.
+     ... Stops, when the target DV spread has been found.
+     The script in this mode is run on the last stable state before the Gengar
+     battle.
+     mode parameter variables:
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC;
+
+     mewtwomoltres
+     ... Sets the script to start Mewtwo or Moltres battles for certain DV
+     spreads.
+     ... Works with RGBY only.
+     ... Stops, when the target DV spread has been found.
+     The script in this mode is run on the cry text or the last stable state
+     before the Mewtwo or Moltres battle.
+     mode parameter variables:
+          species_target,
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC;
+
+     count
+     ... Sets the script to print daycare egg counters.
+     ... Works with GSC only.
+     ... Prints the current counters.
+     The script in this mode is run on any state in which daycare egg counters
+     are readable.
+     mode parameter variables: none;
+
+     lay
+     ... Sets the script to walk until eggs are readied.
+     ... Works with GSC only.
+     ... Stops, when an egg has been readied.
+     The script in this mode is run on the daycare dialogue state before egg
+     verification.
+     mode parameter variables:
+          n_step_potentialegg_target,
+          max_delay,
+          direction_lateral;
+
+     hatch
+     ... Sets the script to walk until eggs hatch.
+     ... Works with GSC only.
+     ... Stops, when the egg has hatched.
+     The script in this mode is run on a walkable state with the egg in the
+     party.
+     mode parameter variables: direction_lateral;
+
+     walktogether
+     ... Sets the script to walk for certain friendship values.
+     ... Works with GSC only.
+     ... Stops, when the target friendship value has been reached.
+     The script in this mode is run on a walkable state with the target 'mon in
+     party slot 1.
+     mode parameter variables:
+          friendship_target,
+          direction_lateral;
+
+F R A N Ç A I S 
+        français
+
+Ce logiciel est un script d'automatisation^1 en Lua^9 pour Pokémon Version
+Rouge, Version Verte, Version Bleue, Version Jaune : Édition Spéciale Pikachu,
+Version Or, Version Argent et Version Cristal et VisualBoyAdvance-ReRecording
+(VBA-RR)^2. Il requiert une ROM d'un de ces jeux, VBA-ReRecording 23.6
+(SVN 480) et une version 32 bits de Windows ou une version 64 bits de Windows
+avec le sous-système Windows-32-on-Windows-64 (WOW64). L'utilisateur peut
+l'installer avec l'Explorateur de fichiers^3 et le Bloc-notes^4 de Windows et
+l'utiliser depuis une fenêtre de script Lua de l'outil de script Lua de VBA-RR
+sur un de ces jeux.
+
+I N S T A L L E R 
+         installer
+
+  0  Installez VisualBoyAdvance-ReRecording 23.6 (SVN 480)^2, et assurez-vous
+     que le Bloc-notes^4 de Windows est installé.
+  1  Obtenez mes utilitaires de manipulation du RNG G1 & G2^5, prenez le
+     fichier Lua^6 de l'archive, et mettez-le dans le dossier des scripts Lua
+     de VBA-RR^7.
+  2  Lancez VBA-RR, ouvrez son interpréteur Lua autonome^8, parcourez le
+     dossier du script, puis modifiez ses variables de 'paramètre'^10, ou
+     lancez-le au bon moment du jeu.
+
+U T I L I S E R 
+        utiliser
+
+Le script ne peut pas se contrôler interactivement. Comme il doit se régler
+entièrement par des variables, il se contrôle par des modes. Avant de lancer le
+script, l'utilisateur sélectionne le mode par sa variable.
+
+kvpbsg1ng2rngmanipulationbot.lua
+line 1    mode = "encounter"
+
+Toutes les variables de 'paramètre' doivent être réglées dans le fichier Lua
+lui-même. Le mode détermine les variables de paramètre utilisées ; différents
+modes peuvent dépendre de différentes variables de paramètre. Juste ci-dessous,
+dans cette section du fichier read-me à la manière d'une page de manuel,
+suivent toutes les variables ou constantes de paramètre et leurs valeurs.
+    Il faut mettre le jeu dans le dernier état stable avant l'interaction pour
+le résultat, p. ex. répartition de DV, capture de 'mon, objet tenu de 'mon
+sauvage, éclosion d'œuf, niveau d'amitié... Le script doit alors être lancé à
+ce moment-là, ni plus tôt, ni plus tard. Il interagit ensuite avec le jeu, lit
+la mémoire, rejette les échecs, recharge l'état, avance le jeu, recommence,
+jusqu'à ce qu'il réussisse à atteindre une frame du résultat cible.
+    Le script peut avoir besoin de tourner un moment. VBA-RR peut être réglé
+pour faire tourner le jeu beaucoup plus vite : désynchroniser la vitesse
+d'émulation, sauter 9 frames sur 10, l'accélérer à 1000 %, réduire la fenêtre
+à 1 fois, et désactiver le son.^11
+
+VARIABLES DE 'PARAMÈTRE'
+
+     mode
+     ... Règle le script pour interagir avec le jeu d'une certaine façon.
+     valeurs :
+          "id",
+          "get",
+          "catch",
+          "breed",
+          "encounter",
+          "fish",
+          "smash",
+          "headbutt",
+          "trade",
+          "battle",
+          "hold",
+          "unown",
+          "raikouenteisuicune",
+          "suicune",
+          "glitch",
+          "yellowmew",
+          "gengar",
+          "mewtwomoltres",
+          "count",
+          "lay",
+          "hatch",
+          "walktogether" ;
+
+     flag_pause_uponhit
+     ... Règle la pause de l'émulation, quand on a réussi.
+      valeurs :
+          true,
+          false ;
+
+     flag_Lapras
+     ... Règle l'entrée de combat de Lapras.
+      valeurs :
+          true,
+          false ;
+
+     DV_target
+     ... Règle les cibles de DV usuelles.
+     valeurs :
+          "color", "altcolor" ou "shiny" pour tout 'mon alt. color,
+          "flawless" ou
+          "flawlessdark" pour un 'mon flawless à hidden power de type dark,
+          "colorflawless", pour tout 'mon alt. color '(near-)flawless',
+          "flawlessdragon",
+          "flawlessice",
+          "flawlesspsychic",
+          "flawlesselectric",
+          "flawlessgrass",
+          "flawlesswater",
+          "flawlessfire",
+          "flawlesssteel",
+          "flawlessghost",
+          "flawlessbug",
+          "flawlessrock",
+          "flawlessground",
+          "flawlesspoison",
+          "flawlessflying",
+          "flawlessfighting",
+          "colorflawlessgrass",
+          "colorflawlessdragon" ;
+
+     DV_ATKDEF &
+     DV_SPDSPC
+     ... Règlent une répartition de DV par octets.
+     valeurs : [ 0x00 ; 0xFF ] ;
+
+     DV_ATK,
+     DV_DEF,
+     DV_SPD &
+     DV_SPC
+     ... Règlent une répartition de DV par valeurs.
+     valeurs : [  0 ; 15 ] ;
+
+     species_target
+     ... Règle une espèce cible.
+     valeurs :
+          -1,
+          tout indice d'espèce ( [   1 ; 250 ] ) ;
+
+     list_species_target
+     ... Règle plusieurs espèces cibles.
+     valeurs :
+          1,
+          2...
+          250 ;
+
+     list_species_DV_target
+     ... Règle l'espèce cible et le DV ensemble. Ce paramètre remplace les
+     cibles indépendantes d'espèce et de DV.
+     valeurs :
+          species,
+          DV_ATKDEF et
+          DV_SPDSPC ;
+
+ROUTINES D'ACTION (MODES DU SCRIPT)
+
+     id
+     ... Règle le script pour chercher certains ID de dresseur.
+     ... S'arrête, quand l'ID de dresseur cible a été trouvé.
+     Le script dans ce mode est lancé avec le curseur sur New Game.
+     variables de paramètre du mode :
+          TID_target,
+          list_TID_target ;
+
+     get
+     ... Règle le script pour obtenir des 'mon d'équipe à certaines
+     répartitions de DV.
+     ... S'arrête, quand la répartition de DV cible a été trouvée.
+     Le script dans ce mode est lancé au dernier état stable avant que le 'mon
+     soit reçu. Pour les gifts RBY, il est lancé après la demande de surnom
+     avec le curseur sur 'NO'.
+     variables de paramètre du mode :
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC ;
+
+     catch
+     ... Règle le script pour capturer le 'mon sauvage.
+     ... Ne marche qu'avec GSC.
+     ... S'arrête, quand le 'mon sauvage a été capturé.
+     Le script dans ce mode est lancé avec le curseur sur Use avant de lancer
+     la poké ball.
+     variables de paramètre du mode : flag_pause_uponhit ;
+
+     breed
+     ... Règle le script pour reproduire des œufs à certaines répartitions de
+     DV.
+     ... Ne marche qu'avec GSC.
+     ... S'arrête, quand la répartition de DV cible a été trouvée.
+     Le script dans ce mode est lancé après avoir mis le second parent à la
+     pension.
+     variables de paramètre du mode :
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC ;
+
+     encounter
+     ... Règle le script pour marcher pour certaines espèces et répartitions de
+     DV.
+     ... S'arrête, quand l'espèce cible et la répartition de DV ont été
+     trouvées.
+     Le script dans ce mode est lancé sur une case d'où un déplacement peut
+     générer une rencontre sauvage. Pour l'herbe en GSC, le bot marche d'abord
+     vers la droite.
+     variables de paramètre du mode :
+          species_target,
+          list_species_target,
+          list_species_DV_target,
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC,
+          code_direction ;
+
+     fish
+     ... Règle le script pour pêcher pour certaines espèces et répartitions de
+     DV.
+     ... S'arrête, quand l'espèce cible et la répartition de DV ont été
+     trouvées.
+     Le script dans ce mode est lancé avec le curseur sur Use avant d'utiliser
+     la canne.
+     variables de paramètre du mode :
+          species_target,
+          list_species_target,
+          list_species_DV_target,
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC ;
+
+     smash
+     ... Règle le script pour casser des rochers pour certaines espèces et
+     répartitions de DV.
+     ... Ne marche qu'avec GSC.
+     ... S'arrête, quand l'espèce cible et la répartition de DV ont été
+     trouvées.
+     Le script dans ce mode est lancé au dernier état stable avant que Rock
+     Smash soit utilisé sur le rocher.
+     variables de paramètre du mode :
+          species_target,
+          list_species_target,
+          list_species_DV_target,
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC ;
+
+     headbutt
+     ... Règle le script pour headbutt des arbres pour certaines espèces et
+     répartitions de DV.
+     ... Ne marche qu'avec GSC.
+     ... S'arrête, quand l'espèce cible et la répartition de DV ont été
+     trouvées.
+     Le script dans ce mode est lancé au dernier état stable avant action sur
+     l'arbre.
+     variables de paramètre du mode :
+          species_target,
+          list_species_target,
+          list_species_DV_target,
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC ;
+
+     trade
+     ... Règle le script pour échanger des 'mon à certaines répartitions de DV.
+     ... Ne marche qu'avec RGBY.
+     ... S'arrête, quand la répartition de DV cible a été trouvée.
+     Le script dans ce mode est lancé avant la dernière entrée avant
+     l'animation d'échange, aux environs du texte du link cable.
+     variables de paramètre du mode :
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC ;
+
+     battle
+     ... Règle le script pour commencer des combats à certaines répartitions de
+     DV.
+     ... S'arrête, quand la répartition de DV cible a été trouvée.
+     Le script dans ce mode est lancé au texte du cri ou au dernier état stable
+     avant le combat.
+     variables de paramètre du mode :
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC,
+          flag_Lapras ;
+
+     hold
+     ... Règle le script pour rencontrer des 'mon sauvages à certains objets
+     tenus.
+     ... Ne marche qu'avec GSC.
+     ... S'arrête, quand l'objet tenu cible a été trouvé.
+     Le script dans ce mode est lancé sur une case d'où un déplacement peut
+     générer une rencontre sauvage.
+     variables de paramètre du mode :
+          item_target,
+          species_target,
+          list_species_target ;
+
+     unown
+     ... Règle le script pour rencontrer des Unown à certaines lettres et
+     répartitions de DV.
+     ... Ne marche qu'avec GSC.
+     ... S'arrête, quand la lettre cible et la répartition de DV ont été
+     trouvées.
+     Le script dans ce mode est lancé sur une case d'où un déplacement peut
+     générer une rencontre d'Unown.
+     variables de paramètre du mode :
+          letter_unown_target,
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC ;
+
+     raikouenteisuicune
+     ... Règle le script pour relâcher des roamers à certaines répartitions de
+     DV.
+     ... Ne marche qu'avec Gold et Silver.
+     ... S'arrête, quand la répartition de DV cible a été trouvée.
+     Le script dans ce mode est lancé au dernier état stable avant génération
+     des roaming beasts.
+     variables de paramètre du mode :
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC ;
+
+     suicune
+     ... Règle le script pour commencer des combats de Suicune à certaines
+     répartitions de DV.
+     ... Ne marche qu'avec Crystal.
+     ... S'arrête, quand la répartition de DV cible a été trouvée.
+     Le script dans ce mode est lancé au dernier état stable avant le combat de
+     Suicune.
+     variables de paramètre du mode :
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC ;
+
+     glitch
+     ... Règle le script pour déclencher des combats long-range Trainer-Fly
+     glitch à certaines espèces et répartitions de DV.
+     ... Ne marche qu'avec RGBY.
+     ... S'arrête, quand l'espèce cible et la répartition de DV ont été
+     trouvées.
+     Le script dans ce mode est lancé au dernier état stable avant le combat
+     glitch.
+     variables de paramètre du mode :
+          species_target,
+          list_species_target,
+          list_species_DV_target,
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC ;
+
+     yellowmew
+     ... Règle le script pour déclencher des rencontres de Yellow Mew à
+     certaines répartitions de DV.
+     ... Ne marche qu'avec Yellow.
+     ... S'arrête, quand la répartition de DV cible a été trouvée.
+     Le script dans ce mode est lancé au dernier état stable avant la rencontre
+     de Mew.
+     variables de paramètre du mode :
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC ;
+
+     gengar
+     ... Règle le script pour commencer des combats de Gengar à certaines
+     répartitions de DV.
+     ... Ne marche qu'avec RGBY.
+     ... S'arrête, quand la répartition de DV cible a été trouvée.
+     Le script dans ce mode est lancé au dernier état stable avant le combat de
+     Gengar.
+     variables de paramètre du mode :
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC ;
+
+     mewtwomoltres
+     ... Règle le script pour commencer des combats de Mewtwo ou Moltres à
+     certaines répartitions de DV.
+     ... Ne marche qu'avec RGBY.
+     ... S'arrête, quand la répartition de DV cible a été trouvée.
+     Le script dans ce mode est lancé au texte du cri ou au dernier état stable
+     avant le combat de Mewtwo ou Moltres.
+     variables de paramètre du mode :
+          species_target,
+          DV_target,
+          DV_ATKDEF,
+          DV_SPDSPC,
+          DV_ATK,
+          DV_DEF,
+          DV_SPD,
+          DV_SPC ;
+
+     count
+     ... Règle le script pour afficher les compteurs d'œuf de la pension.
+     ... Ne marche qu'avec GSC.
+     ... Affiche les compteurs actuels.
+     Le script dans ce mode est lancé sur tout état où les compteurs d'œuf de
+     la pension sont lisibles.
+     variables de paramètre du mode : none ;
+
+     lay
+     ... Règle le script pour marcher jusqu'à ce que des œufs soient prêts.
+     ... Ne marche qu'avec GSC.
+     ... S'arrête, quand un œuf a été préparé.
+     Le script dans ce mode est lancé sur le dialogue de la pension avant
+     vérification d'œuf.
+     variables de paramètre du mode :
+          n_step_potentialegg_target,
+          max_delay,
+          direction_lateral ;
+
+     hatch
+     ... Règle le script pour marcher jusqu'à ce que des œufs éclosent.
+     ... Ne marche qu'avec GSC.
+     ... S'arrête, quand l'œuf a éclos.
+     Le script dans ce mode est lancé sur un état marchable avec l'œuf dans
+     l'équipe.
+     variables de paramètre du mode : direction_lateral ;
+
+     walktogether
+     ... Règle le script pour marcher pour certaines valeurs d'amitié.
+     ... Ne marche qu'avec GSC.
+     ... S'arrête, quand la valeur d'amitié cible a été atteinte.
+     Le script dans ce mode est lancé sur un état marchable avec le 'mon cible
+     au slot 1 de l'équipe.
+     variables de paramètre du mode :
+          friendship_target,
+          direction_lateral ;
+
+A L S O   T H A N K 
+          also thank:
+R E M E R C I E Z   A U S S I 
+               remerciez aussi:
+-  zep715,
+-  wwwwwwzx,
+-  Collector Togamis,
+-  zaksabeast,
+-  Real96 and
+-  Aligatueur;
+for they contributed to my project directly or indirectly, wittingly or
+unbeknownst to them.
+comme ils ont contribué à mon projet directement ou indirectement,
+volontairement ou non.
+
+                                                     ^J:                       
+                                    ^   .:^^.      ^?7.                        
+                                  ^?Y~!!~~7J. ~!:~YY.               ...........
+                                ^55?57.  ~Y5~!5?~:J~~~~^.  .:^^^~~~~~~~~~~~~~!!
+                               7G?:  !~    ..       .  ~J  ::.... ....::^^^.   
+                               .   ...^^^^^^^~~~~~~~!7J??!~~~~~~~~~~^^::.      
+                                 !?!^^^^:::....:::^~~~^                        
+                                 ~7~^^^^^^~~~~^^^::.                           
+
+_______________________________________
+^1  https://www.ibm.com/docs/en/mam/7.6.1?topic=tasks-automation-scripts
+^2  https://storage.googleapis.com/google-code-archive-downloads/v2/
+      code.google.com/vba-rerecording/vba-rerecording-svn480-win32.7z
+^3  C:\Windows\explorer.exe
+^4  C:\Windows\notepad.exe
+    https://apps.microsoft.com/detail/9msmlrh6lzf3?hl=en-US&gl=FR
+^5  https://github.com/kvpb/rgbygscprngmanipulationutilities
+^6  rgbygscprngmanipulationutilities\VisualBoyAdvance-ReRecording\
+      kvpbsg1ng2rngmanipulationbot.lua
+^7  e.g. C:\Program Files\VBA-ReRecording\
+^8  VBA-RR v23.6 svn480 -> Tools -> Lua Scripting -> New Lua Script Window...
+^9  https://www.lua.org/manual/5.1/manual.html
+    https://www.lua.org/pil/1.4.html
+^10 https://www.ibm.com/docs/en/z-netview/6.3.0?topic=variables-parameter
+^11 VBA-RR v23.6 svn480 -> Options -> Speed -> Synchronize Emulation Speed
+    VBA-RR v23.6 svn480 -> Options -> Speed -> Frame Skip
+      -> Skip 9 (Skip 9 Out Of Every 10 Frames)
+    VBA-RR v23.6 svn480 -> Options -> Speed -> Set Speed -> Other... -> 1000
+      -> OK
+    VBA-RR v23.6 svn480 -> Options -> Video -> 1x Window Size
+    VBA-RR v23.6 svn480 -> Options -> Audio -> Disable
