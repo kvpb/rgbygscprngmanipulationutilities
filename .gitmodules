@@ -4,3 +4,6 @@
 [submodule "calculatergbywildmondv"]
 	path = calculatergbywildmondv
 	url = https://gist.github.com/kvpb/f882f3df9c340bc2bd6e31800c20a3e4.git
+[submodule "long-rangetrainerescapeglitchmonbestdvspreads"]
+	path = long-rangetrainerescapeglitchmonbestdvspreads
+	url = https://gist.github.com/kvpb/deb6044e7e5ea3cf82149d8a74549dd2.git
