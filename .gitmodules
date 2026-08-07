@@ -1,3 +1,6 @@
 [submodule "pokemongoldandsilverandcrystalversionbestindividualstrengthspreads"]
 	path = pokemongoldandsilverandcrystalversionbestindividualstrengthspreads
 	url = https://gist.github.com/kvpb/acdb73106089c7adc448af36a29af0f7.git
+[submodule "calculatergbywildmondv"]
+	path = calculatergbywildmondv
+	url = https://gist.github.com/kvpb/f882f3df9c340bc2bd6e31800c20a3e4.git
