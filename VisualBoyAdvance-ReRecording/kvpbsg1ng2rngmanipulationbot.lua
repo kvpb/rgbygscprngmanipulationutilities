@@ -1,16 +1,17 @@
-mode = "unown"
+mode = "catch"
 -- modes:
 -- 	id,                 get,                catch,              breed,
--- 	encounter,          fish,               smash,              headbutt,           trade,              battle,             hold,
+-- 	encounter,          fish,               smash,              headbutt,
+-- 	                    trade,              battle,             hold,
 -- 	unown,              raikouenteisuicune, suicune,
 -- 	glitch,             yellowmew,          gengar,             mewtwomoltres,
 -- 	count,              lay,                hatch,              walktogether,
+flag_lapras = false -- for laprases in the depths of the Union Cave only; swim to them, face them, pause there, set this variable to true, and run the script.
+letter_unown_target = "A"
 IS_target = {
-	"faridakhennane", -- I'm debugging the software with these dysgenic, lower-half-tier individual strengths. Gotta wipe 'em all out.
-	"flawless",
 	"flawlessdark",
-	"colorflawless",
 	"colorflawlessdragon",
+	"color",
 }
 -- IS spreads 'usuels':
 -- 	color,               flawless,            colorflawless,
@@ -28,13 +29,287 @@ IS_SPD = 15
 IS_SPC = 15
 species_target = -1 -- -1: other species aren't filtered;
 list_species_target = {
-	 16,  98,--
 	 23,  24,  35,  50,  51,  60,  61,  63,  64,  66,  67,  74,  75,  79,  80,  81,  82,  84,  85,  88,  89,  90,  92,  93,  95, 102, 104, 105, 111, 112, 113, 116, 117, 120, 123, 124, 129, 130, 131, 132, 147, 148,
-	200, 202, 204, 213, 214, 227, 235, 246, 247,
-	 83,  80,  54,  96, -- These are the numbers of the 'mons of the best utility 'mons.
-	243, 244, 245 -- These are the species numbers of raikou, entei, suicune for the raikouenteisuicune mode. Remember you can't encounter suicunes this way in Crystal Version; you gotta battle them in C with this script in suicune mode.
+	200, 202, 204, 213, 214, 227, 235, 246, 247, -- These are the numbers of KVPB's (my) favorite species. Set these to your species of interest.
+	 83,  80,  54,  96, -- These are the numbers of the 'mons of the best set of utility 'mons: farfetch'd for cut and fly in RGBY and cut, fly and headbutt in GSC, slowbro for surf, strength, teleport or dig and flash in RGBY and surf, strength, headbutt even without TM, rock smash, flash and dig in GSC, psyduck for surf, strength, whirlpool and waterfall in GSC, geodude for strength, headbutt, rock smash and dig in GSC and drowzee for headbutt without TM and flash in GSC.
+	243, 244, 245, -- These are the species numbers of raikou, entei, suicune for the raikouenteisuicune mode. Remember you can't encounter suicunes this way in Crystal Version; you gotta battle them in C with this script in suicune mode.
 } -- {}: the list isn't filtered;
-list_species_IS_target = {} -- { { species = 123, IS_ATKDEF = 0xCC, IS_SPDSPC = 0xFF } }: species-and-IS targets; {}: species_target or list_species_target and IS_target are used independently;
+list_species_IS_target = {
+--	{ species = 3, IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): level-50 razor leaf, leech seed, sleep powder and synthesis venusaur with PRZ cure berry
+--	                                                                                                                                               or reflect
+--	{ species = 6, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 fire blast, earthquake,      hyper beam     and belly drum      charizard with miracle berry
+--	                                                                                                                       or crunch   or fissure       or rock slide      or swords dance                or focus band
+--	                                                                                                                                   or dynamic punch or double-edge     or sunny day
+--	{ species = 26, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 surf,           rollout, double team and substitute raichu with leftovers
+--	                                                                                                                        or defense curl
+--	{ species = 31, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-50 earthquake, thunder, ice beam and charm nidoqueen with leftovers
+--	{ species = 34, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 earthquake,   fire blast, ice beam  and thunderbolt nidoking with mint berry
+--	                                                                                                                        or blizzard               or surf       or thunder
+--	                                                                                                                        or horn drill
+--	{ species = 36, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 return,        encore, belly drum and moonlight clefable with pink bow
+--	                                                                                                                        or frustration or sing
+--	                                                                                                                        or fire blast
+--	{ species = 57, IS_ATKDEF = 0xCD, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  7, 12, 13, 15, 15 ): level-54 cross chop, thunder, rock slide and flying-type hidden power primeape with miracle berry
+--	{ species = 59, IS_ATKDEF = 0xCC, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  3, 12, 12, 15, 15 ): level-55 fire blast, extreme speed, fighting-type hidden power and curse arcanine with miracle berry
+--	{ species = 62, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 hydro pump, submission, frustration    and belly drum     poliwrath with mystic water
+--	                                                                                                                                    or fissure  or double-edge     or mind reader
+--	{ species = 65, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 psychic, ice punch,       encore and recover alakazam with miracle berry
+--	                                                                                                                                 or fire punch
+--	                                                                                                                                 or thunder punch
+--	                                                                                                                                 or dynamic punch
+--	                                                                                                                                 or zap cannon
+--	                                                                                                                                 or toxic
+--	                                                                                                                                 or barrier
+--	                                                                                                                                 or reflect
+--	                                                                                                                                 or light screen
+--	{ species = 68, IS_ATKDEF = 0xDE, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 11, 13, 14, 15, 15 ): level-50    cross chop,   ghost-type hidden power, rock slide              and meditate      machamp with miracle berry
+--	                                                                                                                           or fire blast                          or encore                   or scary face
+--	                                                                                                                           or rest
+--	                                                                                                               or level-55 cross chop,   rock slide,              ghost-type hidden power and meditate      machamp with miracle berry
+--	{ species = 68, IS_ATKDEF = 0xDD, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 13, 13, 15, 15 ): level-55 cross chop, earthquake, bug-type hidden power and fire blast machamp with miracle berry
+--	{ species = 71, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 sludge bomb, giga drain, swords dance and sleep powder victreebel with leftovers
+--	{ species = 73, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55    hydro pump, sludge bomb, swords dance   and substitute tentacruel with leftovers
+--	                                                                                                                           or curse                 or mirror coat     or screech
+--	                                                                                                               or level-53 hydro pump, sludge bomb, swords dance   and substitute tentacruel with leftovers
+--	                                                                                                                           or surf
+--	                                                                                                               or level-50 surf, sludge bomb, rapid spin and screech tentacruel with poison barb
+--	{ species = 76, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-50 rock slide,   roar,         curse and explosion golem with polkadot bow
+--	                                                                                                                        or earthquake or fire blast
+--	{ species = 80, IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): level-55 surf, thunder wave, attract and substitute slowbro with leftovers
+--	{ species = 89, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-53    sludge bomb, fire blast,    dynamic punch and explosion muk with leftovers
+--	                                                                                                                                                                         or curse
+--	                                                                                                               or level-55 sludge bomb, dynamic punch, sleep talk    and rest      muk with scope lens
+--	                                                                                                                                                                                            or bright powder
+--	{ species = 91, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-50    ice beam, spikes,     reflect and explosion cloyster with gold berry
+--	                                                                                                                           or surf
+--	                                                                                                               or level-52 surf,     spikes,     curse   and explosion cloyster with gold berry
+--	                                                                                                               or level-51 surf,     rapid spin, spikes  and rest      cloyster with mint berry
+--	{ species = 94, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-50    fire punch,    mean look, perish song  and explosion       gengar with charcoal
+--	                                                                                                                           or ice punch                               or destiny bond             or never-melt ice
+--	                                                                                                                           or thunderbolt                             or hypnosis
+--	                                                                                                               or level-52 thunderbolt,   ice punch, haze         and explosion     gengar with miracle berry
+--	                                                                                                                                                                                                or PRZ cure berry
+--	                                                                                                               or level-55 thunderbolt,   ice punch, shadow ball  and dynamic punch gengar with miracle berry
+--	                                                                                                                                                     or mean look     or explosion
+--	{ species = 101, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-50 thunderbolt, reflect,        light screen and explosion electrode with miracle berry
+--	                                                                                                                         or thunder   or thunder wave
+--	{ species = 101, IS_ATKDEF = 0xED, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  7, 14, 13, 15, 15 ): level-50 thunder, water-type hidden power, rain dance and explosion electrode with miracle berry
+--	{ species = 103, IS_ATKDEF = 0xEE, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  3, 14, 14, 15, 15 ): level-50 grass-type hidden power, stun spore,   reflect         and explosion exeggutor with gold berry
+--	                                                                                                                         or rest                  or psychic    or sleep powder
+--	                                                                                                                                                  or leech seed or sleep talk
+--	{ species = 103, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-53 psychic,   leech seed, stun spore      and moonlight     exeggutor with miracle berry
+--	                                                                                                                         or reflect             or sleep powder     or substitute
+--	{ species = 103, IS_ATKDEF = 0xCC, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  3, 12, 12, 15, 15 ): level-55 psychic, fighting-type hidden power, leech seed and moonlight exeggutor with miracle berry
+--	{ species = 105, IS_ATKDEF = 0xDD, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 13, 13, 15, 15 ): level-55 earthquake,   rock slide, bug-type hidden power and swords dance marowak with thick club
+--	                                                                                                                         or bonemerang
+--	{ species = 105, IS_ATKDEF = 0xCD, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  7, 12, 13, 15, 15 ): level-54 bonemerang, rock slide, flying-type hidden power and belly drum      marowak with thick club
+--	                                                                                                                                                                              or swords dance
+--	{ species = 105, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-52    earthquake,   rock slide, fire blast   and icy wind   marowak with thick club
+--	                                                                                                                            or bonemerang
+--	                                                                                                                or level-50 bonemerang,   rock slide, flamethrower and belly drum marowak with thick club
+--	{ species = 110, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-50 fire blast, pain split, haze            and explosion weezing with miracle berry
+--	                                                                                                                                                 or destiny bond
+--	{ species = 112, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-50    earthquake, rock slide, counter       and curse rhydon with leftovers
+--	                                                                                                                or level-55 earthquake, rock slide, zap cannon    and curse rhydon with leftovers
+--	                                                                                                                                                    or horn drill
+--	{ species = 115, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55    return,      curse,        roar       and rest          kangaskhan with mint berry
+--	                                                                                                                                         or reversal   or attract     or substitute                 or king's rock
+--	                                                                                                                                                                                                    or bright powder
+--	                                                                                                                or level-55 double-edge, earthquake,   curse      and roar       kangaskhan with leftovers
+--	                                                                                                                            or rest      or fire blast                or attract
+--	{ species = 120, IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): level-50    hydro pump, thunder wave,  reflect         and recover    starmie with miracle berry
+--	                                                                                                                            or surf     or thunderbolt or light screen                             or PRZ cure berry
+--	                                                                                                                                        or thunder     or rapid spin
+--	                                                                                                                or level-51 surf,       thunder wave,  confuse ray     and substitute starmie with leftovers
+--	                                                                                                                or level-55 hydro pump, psychic,       ice beam        and recover    starmie with miracle berry
+--	                                                                                                                            or surf     or thunder     or substitute
+--	                                                                                                                                        or dream eater or toxic
+--	                                                                                                                                        or nightmare   or confuse ray
+--	{ species = 124, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55    ice beam,  psychic,     lovely kiss and substitute jynx with leftovers
+--	                                                                                                                                       or nightmare
+--	                                                                                                                or level-52 mean look, perish song, lovely kiss and substitute jynx with leftovers
+--	                                                                                                                            or counter              or attract
+--	                                                                                                                or level-50 ice beam, psychic, lovely kiss      and reflect jynx with miracle berry
+--	                                                                                                                                               or sleep talk        or rest           or scope lens
+--	{ species = 125, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 thunderbolt, cross chop, ice punch     and rest electabuzz with mint berry
+--	                                                                                                                         or thunder               or sleep talk                          or scope lens
+--	{ species = 125, IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): level-55 thunderbolt, ice punch, attract and substitute electabuzz with leftovers
+--	                                                                                                                         or thunder
+--	{ species = 128, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55    return,        earthquake,  fire blast and curse      tauros with miracle berry
+--	                                                                                                                            or frustration
+--	                                                                                                                or level-55 double-edge,   earthquake,  fire blast and hyper beam tauros with berserk gene
+--	                                                                                                                or level-55 double-edge,   earthquake,  horn drill and substitute tauros with leftovers
+--	                                                                                                                                           or iron tail
+--	{ species = 130, IS_ATKDEF = 0xCD, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  7, 12, 13, 15, 15 ): level-50    hydro pump,               flying-type hidden power, sleep talk and rest    gyarados with sharp beak
+--	                                                                                                                or level-52 flying-type hidden power, surf,                     zap cannon and reflect gyarados with miracle berry
+--	{ species = 130, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 hydro pump, double-edge, roar       and curse         gyarados with leftovers
+--	                                                                                                                         or surf     or body slam or swagger     or substitute
+--	                                                                                                                         or zap cannon
+--	{ species = 131, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 ice beam,     thunder,       confuse ray and substitute lapras with leftovers
+--	                                                                                                                         or surf       or zap cannon  or attract
+--	                                                                                                                         or hydro pump or thunderbolt or double team
+--	                                                                                                                                       or body slam   or perish song
+--	                                                                                                                         or nightmare
+--	                                                                                                                         or horn drill
+--	                                                                                                                         or whirlpool
+--	{ species = 134, IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): level-55    surf,          ice beam, charm      and rest       vaporeon with mint berry
+--	                                                                                                                or level-52 hydro pump,    roar,     acid armor and baton pass vaporeon with leftovers
+--	                                                                                                                            or surf                  or curse
+--	                                                                                                                            or double team
+--	{ species = 135, IS_ATKDEF = 0xAC, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  3, 10, 12, 15, 15 ): level-55 thunder,       fire-type hidden power, swagger and substitute jolteon with leftovers
+--	                                                                                                                         or thunderbolt
+--	{ species = 135, IS_ATKDEF = 0x3F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  3, 15, 15, 15 ): level-50 thunder,       charm,     agility and baton pass jolteon with gold berry
+--	                                                                                                                         or thunderbolt or reflect
+--	{ species = 139, IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): level-55 surf,         toxic,          sandstorm     and protect       omastar with leftovers
+--	                                                                                                                         or hydro pump or seismic toss or swagger        or substitute
+--	                                                                                                                                       or ice beam     or horn drill
+--	                                                                                                                or level-50 surf,      toxic,          withdraw      and rest omastar with burnt berry
+--	                                                                                                                                       or reflect      or haze
+--	{ species = 142, IS_ATKDEF = 0xDC, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 11, 13, 12, 15, 15 ): level-55 rock-type hidden power, whirlwind,    swagger and substitute aerodactyl with leftovers
+--	                                                                                                                         or fire blast           or earthquake or curse
+--	{ species = 143, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55    double-edge,    sleep talk,    curse         and rest             snorlax with leftovers
+--	                                                                                                                            or body slam    or earthquake  or belly drum     or substitute
+--	                                                                                                                            or rollout      or toxic                         or self-destruct
+--	                                                                                                                            or fissure      or double team                   or protect
+--	                                                                                                                            or zap cannon
+--	                                                                                                                            or flamethrower
+--	                                                                                                                or level-53 return,         fire blast, curse            and rest             snorlax with leftovers
+--	                                                                                                                            or double-edge  or thunder
+--	                                                                                                                            or counter
+--	                                                                                                                or level-50 body slam,      earthquake, curse            and self-destruct    snorlax with leftovers
+--	                                                                                                                            or return                   or belly drum
+--	                                                                                                                            or double-edge              or fire blast
+--	                                                                                                                or level-50 body slam, dynamic punch, sleep talk and rest snorlax with bright powder
+--	{ species = 144, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 ice beam, double-edge, whirlwind and curse articuno with leftovers
+--	{ species = 144, IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): level-53    blizzard, icy wind,  sleep talk and rest articuno with never-melt ice
+--	                                                                                                                or level-51 ice beam, whirlwind, toxic      and rest articuno with mint berry
+--	                                                                                                                                      or reflect
+--	{ species = 145, IS_ATKDEF = 0xFD, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 13, 15, 15 ): level-55 thunderbolt, ice-type hidden power, whirlwind and rest zapdos with miracle berry
+--	                                                                                                                                      or drill peck
+--	{ species = 145, IS_ATKDEF = 0xBD, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 11, 13, 15, 15 ): level-55    thunder,     ice-type hidden power, sleep talk   and rest       zapdos with magnet
+--	                                                                                                                or level-55 thunder,     ice-type hidden power, swagger      and substitute zapdos with leftovers
+--	                                                                                                                or level-52 thunderbolt, ice-type hidden power, reflect      and rest       zapdos with miracle berry
+--	                                                                                                                                                                or whirlwind
+--	{ species = 146, IS_ATKDEF = 0xAE, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  3, 10, 14, 15, 15 ): level-55 fire blast, grass-type hidden power, sunny day  and rest moltres with miracle berry
+--	                                                                                                                         or reflect                           or agility                       or PRZ cure berry
+--	{ species = 146, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 fire blast, sky attack,  sleep talk and rest moltres with charcoal
+--	                                                                                                                                     or sunny day
+--	{ species = 149, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 double-edge,     dynamic punch, thunder and blizzard    dragonite with miracle berry
+--	                                                                                                                         or extreme speed                            or ice beam
+--	{ species = 154, IS_ATKDEF = 0xCC, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  3, 12, 12, 15, 15 ): level-55 fighting-type hidden power, leech seed, curse and synthesis meganium with miracle berry
+--	                                                                                                                                                                                                   or bright powder
+--	{ species = 157, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 fire blast, thunder punch, dynamic punch and sunny day typhlosion with miracle berry
+--	                                                                                                                                                    or reversal       or endure
+--	{ species = 160, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55    hydro pump, earthquake,      crunch        and rest    feraligatr with mint berry
+--	                                                                                                                                        or dynamic punch
+--	                                                                                                                or level-55 hydro pump, frustration,     dynamic punch and screech feraligatr with leftovers
+--	                                                                                                                                        or earthquake
+--	{ species = 189, IS_ATKDEF = 0xCD, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  7, 12, 13, 15, 15 ): level-55 flying-type hidden power, leech seed, encore and sleep powder jumpluff with miracle berry
+--	{ species = 195, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 earthquake, ice beam,    dynamic punch and sandstorm quagsire with leftovers
+--	                                                                                                                         or surf     or body slam
+--	{ species = 195, IS_ATKDEF = 0xDC, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 11, 13, 12, 15, 15 ): level-55 earthquake, rock-type hidden power, belly drum and rest quagsire with mint berry
+--	{ species = 197, IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): level-50 toxic,     charm,       sleep talk    and rest umbreon with bright powder
+--	                                                                                                                         or pursuit or mean look or baton pass                       or mint berry
+--	                                                                                                                or level-53 mean look,     charm,     baton pass and moonlight umbreon with miracle berry
+--	                                                                                                                            or double team or reflect                                       or mystery berry
+--	{ species = 197, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 double-edge, screech,       curse and rest         umbreon with leftovers
+--	                                                                                                                         or return    or zap cannon            or moonlight
+--	                                                                                                                         or iron tail or confuse ray
+--	                                                                                                                         or body slam
+--	{ species = 200, IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): level-50    zap cannon,   mean look,   perish song and destiny bond misdreavus with gold berry
+--	                                                                                                                            or thief
+--	                                                                                                                            or pain split
+--	                                                                                                                or level-51 mean look,    perish song, protect     and rest         misdreavus with mint berry
+--	{ species = 200, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 shadow ball, confuse ray, screech    and pain split misdreavus with leftovers
+--	                                                                                                                         or thunder   or curse     or protect
+--	{ species = 203, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 return,        psychic, thunder and curse girafarig with leftovers
+--	                                                                                                                         or frustration
+--	{ species = 205, IS_ATKDEF = 0xDD, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 13, 13, 15, 15 ): level-50 bug-type hidden power, spikes, curse and explosion forretress with gold berry
+--	{ species = 208, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-50    earthquake,   roar,         toxic        and explosion steelix with leftovers
+--	                                                                                                                            or screech                  or sandstorm
+--	                                                                                                                or level-55 iron tail,    screech,      roar         and curse     steelix with leftovers
+--	                                                                                                                            or earthquake or rock slide
+--	{ species = 212, IS_ATKDEF = 0xCC, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  3, 12, 12, 15, 15 ): level-55 double-edge, fighting-type hidden power, steel wing   and swords dance scizor with leftovers
+--	                                                                                                                                                                  or sandstorm
+--	{ species = 212, IS_ATKDEF = 0xDD, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 13, 13, 15, 15 ): level-50 bug-type hidden power, light screen, swords dance and baton pass scizor with gold berry
+--	{ species = 213, IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): level-50 toxic, encore, defense curl and rest shuckle with leftovers
+--	{ species = 213, IS_ATKDEF = 0x7F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  7, 15, 15, 15 ): level-50 double team, defense curl, rollout and rest shuckle with leftovers
+--	{ species = 214, IS_ATKDEF = 0xCC, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  3, 12, 12, 15, 15 ): level-55 megahorn, fighting-type hidden power, endure and reversal heracross with black belt
+--	{ species = 214, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55    megahorn, earthquake, sleep talk and rest heracross with silver powder
+--	                                                                                                                                      or curse
+--	                                                                                                                or level-55 megahorn, curse,      sleep talk and rest heracross with leftovers
+--	{ species = 217, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55    frustration, earthquake,      zap cannon    and hyper beam ursaring with berserk gene
+--	                                                                                                                            or return                     or thief
+--	                                                                                                                or level-55 frustration, roar,            curse         and rest ursaring with leftovers
+--	                                                                                                                                         or earthquake    or sleep talk
+--	                                                                                                                                         or dynamic punch or zap cannon
+--	{ species = 221, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55    earthquake, ice beam, sleep talk and rest       piloswine with soft sand
+--	                                                                                                                or level-55 earthquake, ice beam, toxic      and roar       piloswine with leftovers
+--	                                                                                                                                                                 or protect
+--	                                                                                                                or level-53 earthquake, ice beam, sleep talk and rest piloswine with scope lens
+--	{ species = 222, IS_ATKDEF = 0xDC, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 11, 13, 12, 15, 15 ): level-55 rock-type hidden power, amnesia, curse           and recover corsola with leftovers
+--	                                                                                                                         or rollout                       or defense curl
+--	{ species = 227, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-50    drill peck, whirlwind, curse    and rest    skarmory with mint berry
+--	                                                                                                                            or thief               or toxic
+--	                                                                                                                or level-52 drill peck, whirlwind, toxic    and protect skarmory with leftovers
+--	{ species = 229, IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): level-50    fire blast, crunch, pursuit and sunny day  houndoom with gold berry
+--	                                                                                                                            or roar                         or counter
+--	                                                                                                                or level-52 fire blast, crunch, pursuit and thief      houndoom
+--	{ species = 229, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 fire blast, crunch,    reversal  and endure       houndoom with miracle berry
+--	                                                                                                                                     or pursuit or solar beam or sunny day
+--	{ species = 230, IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): level-50 hydro pump, dragon breath, sleep talk and rest kingdra with mystic water
+--	{ species = 230, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 hydro pump, double-edge, curse and substitute kingdra with leftovers
+--	                                                                                                                                                            or rest
+--	{ species = 232, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-50    earthquake, encore,      toxic and protect donphan with leftovers
+--	                                                                                                                or level-55 earthquake, double-edge, curse and roar    donphan with leftovers
+--	{ species = 233, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55    double-edge,   ice beam,       curse and recover porygon2 with miracle berry
+--	                                                                                                                            or double team or conversion 2
+--	                                                                                                                            or reflect
+--	                                                                                                                or level-50 ice beam,      thunder wave, reflect and recover porygon2 with miracle berry
+--	                                                                                                                            or frustration               or curse
+--	                                                                                                                            or double-edge
+--	{ species = 235, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 hasami guillotine, spore, belly drum and mirror coat attacker (flawless) smeargle with miracle berry
+--	                                                                                                                         or flail                  or lock-on     or substitute
+--	{ species = 235, IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): level-50    spore,         encore,       agility    and baton pass      smeargle with miracle berry
+--	                                                                                                                            or leech seed  or whirlwind  or growth      or destiny bond
+--	                                                                                                                            or belly drum
+--	                                                                                                                            or substitute
+--	                                                                                                                            or spikes
+--	                                                                                                                or level-55 super fang,    seismic toss, leech seed and substitute smeargle with leftovers
+--	                                                                                                                            or confuse ray
+--	                                                                                                                            or attract
+--	{ species = 241, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-50    body slam,      growl,         heal bell   and milk drink miltank with bright powder
+--	                                                                                                                or level-52 double team,    defense curl,  rollout     and milk drink miltank with bright powder
+--	                                                                                                                or level-55 return,         dynamic punch, curse       and milk drink miltank with pink bow
+--	                                                                                                                            or body slam    or thunder     or psych up
+--	                                                                                                                            or seismic toss or earthquake
+--	                                                                                                                            or surf
+--	                                                                                                                            or attract
+--	{ species = 242, IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): level-50 thunder,        ice beam, heal bell       and soft-boiled blissey with quick claw
+--	                                                                                                                         or solar beam             or light screen
+--	                                                                                                                         or flamethrower           or reflect
+--	                                                                                                                         or growl
+--	                                                                                                                         or toxic
+--	                                                                                                                         or thunder wave
+--	                                                                                                                         or sing
+--	                                                                                                                         or sunny day
+--	                                                                                                                         or counter
+--	{ species = 243, IS_ATKDEF = 0xBD, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 11, 13, 15, 15 ): level-55 thunderbolt,  ice-type hidden power, roar    and rest raikou with leftovers
+--	                                                                                                                         or thunder
+--	{ species = 243, IS_ATKDEF = 0xAC, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  3, 10, 12, 15, 15 ): level-55 thunderbolt, fire-type hidden power, toxic   and rest raikou with mint berry
+--	                                                                                                                         or reflect                           or roar
+--	                                                                                                                         or sunny day
+--	{ species = 244, IS_ATKDEF = 0xCC, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  3, 12, 12, 15, 15 ): level-55 fire blast, solar beam, fighting-type hidden power and sunny day entei with leftovers
+--	{ species = 245, IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): level-50 surf,        ice beam, sleep talk and rest suicune with bright powder
+--	{ species = 245, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55 surf,        ice beam, roar       and rest suicune with leftovers
+--	                                                                                                                         or sandstorm or toxic  or curse
+--	                                                                                                                         or return
+--	{ species = 248, IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): level-55    crunch,        fire blast,      dynamic punch and sandstorm tyranitar with leftovers
+--	                                                                                                                or level-55 rock slide,    earthquake,      screech       and rest      tyranitar with mint berry
+--	                                                                                                                            or frustration or dynamic punch or sleep talk                              or scope lens
+--	                                                                                                                            or surf        or ice beam      or curse                                   or berserk gene
+--	                                                                                                                            or roar
+} -- { { species = 123, IS_ATKDEF = 0xCC, IS_SPDSPC = 0xFF } }: species-and-IS targets; {}: species_target or list_species_target and IS_target are used independently;
 item_target = nil
 list_item_target = {
 	0x08, -- cleffas' [not in the wild], clefairies' & clefables' [not in the wild] moon stone
@@ -63,9 +338,11 @@ list_item_target = {
 	--0xAC, -- no wild 'mon's upgrade
 	0xAE, -- furrets' gold berry
 } -- {}: no list is set;
-letter_unown_target = "A"
 IDNo_target = 0 -- 0: no ID No. is targeted;
-list_IDNo_target = { 1, 2, 3 } -- Red came 1st, Ethan, 2nd, Kris, 3rd. Some people like 777, others, 69. I got 555555 in Sword!
+list_IDNo_target = {
+	1, 2, 3, -- Red came 1st in RGBY, Ethan, 2nd in GS, Kris, 3rd in C...
+	--22796, -- ゲーフリ AKA GF's ID No. for their mews is 22796.
+} -- Some people like 777, others, 69. I got 555555 in Sword! When I name the character like me, I attempt to get a null value, zero or the max. You do you.
 n_frame_delay = 1000
 max_delay = 3600
 n_step_potentialegg_target = 2
@@ -73,7 +350,6 @@ friendship_target = 220
 direction_lateral = "right"
 code_direction = 0 -- 0: right; 1: up; 3: left; 4: down; -- Support hunting in the minefield.
 flag_pause_uponhit = true
-flag_lapras = false -- for laprases in the depths of Union Cave only; swim to them, face them, pause there, set this variable to true, and run the script.
 game = nil
 flag_Yellow = false
 version_name = nil
@@ -95,2129 +371,72 @@ local filename = info_script.source:match("@(.+)$")
 words_revision_R_JP = {
 	0xC1A2,--
 	0xD5DD,--
-	0x66B8,
+	0x66B8, -- JP R revision 1, version 1.1, SHA-1: EF74C79CDED14204AC79E77F4964D9CB25003120;
 }
 words_revision_G_JP = {
-	0x47F5,
+	0x47F5, -- JP G revision 1, version 1.1, SHA-1: 4B97CD44AA3F0DD290BFE7B3AC17B7BD8270897B;
 }
 words_revision_B_JP = {
-	0x36DC,
+	0x36DC, -- JP B, SHA-1: 0DA501E3E5C51AB8FEF55B092DCDD7E6B050E424;
 }
 words_revision_Y_JP = {
-	0x299C,
+	0x299C, -- JP Y, SHA-1: 1FB6C264E950D97CE3FD99B347E485B2150DF4FF;
 }
 words_revision_R_US = {
-	0xE691,
+	0xE691, -- US R revision 0, version 1.0, SHA-1: EA9BCAE617FDF159B045185467AE58B2E4A48B9A;
 }
 words_revision_B_US = {
-	0x0A9D,
+	0x0A9D, -- US B revision 0, version 1.0, SHA-1: D7037C83E1AE5B39BDE3C30787637BA1D4C48CE2;
 }
 words_revision_Y_US = {
-	0x7C04,
+	0x7C04, -- US Y revision 0, version 1.0, SHA-1: CC7D03262EBFAF2F06772C1A480C7D9D5F4A38E1;
 }
 words_revision_R_EU = {
-	0xFC7A,
+	0xFC7A, -- FR R revision 0, version 1.0, SHA-1: 47A7622FA30E6402A3891FE65B3A930BF9BD7AEC;
+	0xDC5C, -- DE R, SHA-1: 87D523FE1A0C548DB7C5477B451DDEC1EB083C06;
 }
 words_revision_B_EU = {
-	0xA456,
+	0xA456, -- FR B revision 0, version 1.0, SHA-1: 47FAA910D0E073C600665BF9C83B6BD17BABDF8A;
+	0xBC2E, -- DE B, SHA-1: 20E72DC6F41493EEE1FDD0CEF54214E6C3389688;
 }
 words_revision_Y_EU = {
-	0xC1B7,
+	0xC1B7, -- FR Y revision 0, version 1.0, SHA-1: 0ACEEC0EF7AA2CA5AA831554598D91F61A925591;
+	0xFB66, -- DE Y revision 0, version 1.0, SHA-1: 42F3714EEC6ECA25200D42461FF08D57C98F6D1D;
 }
 bytes_revision_G_JP = {
-	0x55,
+	0x55, -- JP G, SHA-1: A222402235D484EE8E39F3F31BAE57CF13DAF585;
 }
 bytes_revision_G_US = {
-	0x55,
+	0x55, -- US G revision 0, version 1.0, SHA-1: D8B8A3600A465308C9953DFA04F0081C05BDCB94;
 }
 bytes_revision_G_EU = {
-	0x55,
+	0x55, -- FR G revision 0, version 1.0, SHA-1: C147C0D8C2B71B7628A7233436F5C052B5B17081;
 }
 bytes_revision_G_KR = {
-	0x55,
+	0x55
 }
 bytes_revision_S_JP = {
-	0x58,
+	0x58, -- JP S, SHA-1: FA8C51059C1642FAA570DB56EF089F54D1D2011F;
 }
 bytes_revision_S_US = {
-	0x58,
+	0x58, -- US S revision 0, version 1.0, SHA-1: 49B163F7E57702BC939D642A18F591DE55D92DAE;
 }
 bytes_revision_S_EU = {
-	0x58,
+	0x58, -- FR S revision 0, version 1.0, SHA-1: A4A7E8079B7A53E4D9EF43382BBB1090B9D45D1A;
 }
 bytes_revision_S_KR = {
-	0x58,
+	0x58
 }
 bytes_revision_C_JP = {
-	0x54,
+	0x54, -- JP C, SHA-1: 95127B901BBCE2407DAF43CCE9F45D4C27EF635D;
 }
 bytes_revision_C_US = {
-	0x54,
+	0x54, -- US C revision 1, SHA-1: F2F52230B536214EF7C9924F483392993E226CFB;
 }
 bytes_revision_C_EU = {
-	0x54,
+	0x54, -- FR C revision 0, version 1.0, SHA-1: C055992B16B7399C687647725CDD1F4F13A2F75C;
 }
 presets_IS_usual = {
-	faridakhennane = {
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x00, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x01, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x02, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x03, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x04, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x05, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x06, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x07, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x20, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x21, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x22, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x23, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x24, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x25, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x26, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x27, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x40, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x41, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x42, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x43, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x44, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x45, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x46, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x47, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x60, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x61, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x62, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x63, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x64, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x65, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x66, IS_SPDSPC = 0x77 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x00 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x01 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x02 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x03 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x04 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x05 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x06 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x07 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x10 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x11 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x12 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x13 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x14 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x15 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x16 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x17 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x20 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x21 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x22 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x23 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x24 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x25 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x26 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x27 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x30 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x31 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x32 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x33 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x34 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x35 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x36 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x37 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x40 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x41 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x42 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x43 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x44 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x45 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x46 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x47 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x50 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x51 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x52 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x53 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x54 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x55 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x56 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x57 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x60 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x61 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x62 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x63 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x64 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x65 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x66 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x67 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x70 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x71 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x72 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x73 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x74 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x75 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x76 },
-		{ IS_ATKDEF = 0x67, IS_SPDSPC = 0x77 },
-	}, -- I'm debugging the software with these dysgenic, lower-half-tier individual strengths. Gotta wipe 'em all out.
-	color = {
-		{ IS_ATKDEF = 0x2A, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  0,  2, 10, 10, 10 ): color;
-		{ IS_ATKDEF = 0x3A, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  8,  3, 10, 10, 10 ): color;
-		{ IS_ATKDEF = 0x6A, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  0,  6, 10, 10, 10 ): color;
-		{ IS_ATKDEF = 0x7A, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  8,  7, 10, 10, 10 ): color;
-		{ IS_ATKDEF = 0xAA, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  0, 10, 10, 10, 10 ): color;
-		{ IS_ATKDEF = 0xBA, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  8, 11, 10, 10, 10 ): color;
-		{ IS_ATKDEF = 0xEA, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  0, 14, 10, 10, 10 ): color;
-		{ IS_ATKDEF = 0xFA, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  8, 15, 10, 10, 10 ): color;
-	},
 	flawlessdark        = { { IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF } }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ):       70-power     dark-type hidden power;
 	flawlessdragon      = { { IS_ATKDEF = 0xFE, IS_SPDSPC = 0xFF } }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 11, 15, 14, 15, 15 ):       70-power   dragon-type hidden power;
 	flawlessice         = { { IS_ATKDEF = 0xFD, IS_SPDSPC = 0xFF } }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 13, 15, 15 ):       70-power      ice-type hidden power;
@@ -2237,36 +456,49 @@ presets_IS_usual = {
 	minmax              = { { IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF } }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): minmax;
 	colorflawlessgrass  = { { IS_ATKDEF = 0xEA, IS_SPDSPC = 0xAA } }, -- (  HP, ATK, DEF, SPD, SPC ) = (  0, 14, 10, 10, 10 ): color 70-power    grass-type hidden power;
 	colorflawlessdragon = { { IS_ATKDEF = 0xFA, IS_SPDSPC = 0xAA } }, -- (  HP, ATK, DEF, SPD, SPC ) = (  8, 15, 10, 10, 10 ): color 70-power   dragon-type hidden power;
+	color = {
+		{ IS_ATKDEF = 0x2A, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  0,  2, 10, 10, 10 ): color;
+		{ IS_ATKDEF = 0x3A, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  8,  3, 10, 10, 10 ): color;
+		{ IS_ATKDEF = 0x6A, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  0,  6, 10, 10, 10 ): color;
+		{ IS_ATKDEF = 0x7A, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  8,  7, 10, 10, 10 ): color;
+		{ IS_ATKDEF = 0xAA, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  0, 10, 10, 10, 10 ): color;
+		{ IS_ATKDEF = 0xBA, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  8, 11, 10, 10, 10 ): color;
+		{ IS_ATKDEF = 0xEA, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  0, 14, 10, 10, 10 ): color;
+		{ IS_ATKDEF = 0xFA, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  8, 15, 10, 10, 10 ): color;
+	},
 }
 presets_IS_usual.altcolor = presets_IS_usual.color
 presets_IS_usual.shiny = presets_IS_usual.color
 presets_IS_usual.flawless = {
-	{ IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): 70-power dark-type hidden power;
-	{ IS_ATKDEF = 0xFE, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = ( 11, 15, 14, 15, 15 ): 70-power dragon-type hidden power;
-	{ IS_ATKDEF = 0xFD, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 13, 15, 15 ): 70-power ice-type hidden power;
-	{ IS_ATKDEF = 0xFC, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = ( 11, 15, 12, 15, 15 ): 70-power psychic-type hidden power;
-	{ IS_ATKDEF = 0xEF, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = (  7, 14, 15, 15, 15 ): 70-power electric-type hidden power;
-	{ IS_ATKDEF = 0xEE, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = (  3, 14, 14, 15, 15 ): 70-power grass-type hidden power;
-	{ IS_ATKDEF = 0xED, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = (  7, 14, 13, 15, 15 ): 70-power water-type hidden power;
-	{ IS_ATKDEF = 0xEC, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = (  3, 14, 12, 15, 15 ): 70-power fire-type hidden power;
-	{ IS_ATKDEF = 0xDF, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = ( 15, 13, 15, 15, 15 ): 70-power steel-type hidden power;
-	{ IS_ATKDEF = 0xDE, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = ( 11, 13, 14, 15, 15 ): 70-power ghost-type hidden power;
-	{ IS_ATKDEF = 0xDD, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = ( 15, 13, 13, 15, 15 ): 70-power bug-type hidden power;
-	{ IS_ATKDEF = 0xDC, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = ( 11, 13, 12, 15, 15 ): 70-power rock-type hidden power;
-	{ IS_ATKDEF = 0xCF, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = (  7, 12, 15, 15, 15 ): 70-power ground-type hidden power;
-	{ IS_ATKDEF = 0xCE, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = (  3, 12, 14, 15, 15 ): 70-power poison-type hidden power;
-	{ IS_ATKDEF = 0xCD, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = (  7, 12, 13, 15, 15 ): 70-power flying-type hidden power;
-	{ IS_ATKDEF = 0xCC, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = (  3, 12, 12, 15, 15 ): 70-power fighting-type hidden power;
+	{ IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): 70-power     dark-type hidden power;
+	{ IS_ATKDEF = 0xFE, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 11, 15, 14, 15, 15 ): 70-power   dragon-type hidden power;
+	{ IS_ATKDEF = 0xFD, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 13, 15, 15 ): 70-power      ice-type hidden power;
+	{ IS_ATKDEF = 0xFC, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 11, 15, 12, 15, 15 ): 70-power  psychic-type hidden power;
+	{ IS_ATKDEF = 0xEF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  7, 14, 15, 15, 15 ): 70-power electric-type hidden power;
+	{ IS_ATKDEF = 0xEE, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  3, 14, 14, 15, 15 ): 70-power    grass-type hidden power;
+	{ IS_ATKDEF = 0xED, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  7, 14, 13, 15, 15 ): 70-power    water-type hidden power;
+	{ IS_ATKDEF = 0xEC, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  3, 14, 12, 15, 15 ): 70-power     fire-type hidden power;
+	{ IS_ATKDEF = 0xDF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 13, 15, 15, 15 ): 70-power    steel-type hidden power;
+	{ IS_ATKDEF = 0xDE, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 11, 13, 14, 15, 15 ): 70-power    ghost-type hidden power;
+	{ IS_ATKDEF = 0xDD, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 13, 13, 15, 15 ): 70-power      bug-type hidden power;
+	{ IS_ATKDEF = 0xDC, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 11, 13, 12, 15, 15 ): 70-power     rock-type hidden power;
+	{ IS_ATKDEF = 0xCF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  7, 12, 15, 15, 15 ): 70-power   ground-type hidden power;
+	{ IS_ATKDEF = 0xCE, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  3, 12, 14, 15, 15 ): 70-power   poison-type hidden power;
+	{ IS_ATKDEF = 0xCD, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  7, 12, 13, 15, 15 ): 70-power   flying-type hidden power;
+	{ IS_ATKDEF = 0xCC, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = (  3, 12, 12, 15, 15 ): 70-power fighting-type hidden power;
 }
 presets_IS_usual.colorflawless = {
-	{ IS_ATKDEF = 0xEA, IS_SPDSPC = 0xAA }, -- ( HP, ATK, DEF, SPD, SPC ) = (  0, 14, 10, 10, 10 ): color 70-power grass-type hidden power;
-	{ IS_ATKDEF = 0xFA, IS_SPDSPC = 0xAA }, -- ( HP, ATK, DEF, SPD, SPC ) = (  8, 15, 10, 10, 10 ): color 70-power dragon-type hidden power;
+	{ IS_ATKDEF = 0xEA, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  0, 14, 10, 10, 10 ): color 70-power  grass-type hidden power;
+	{ IS_ATKDEF = 0xFA, IS_SPDSPC = 0xAA }, -- (  HP, ATK, DEF, SPD, SPC ) = (  8, 15, 10, 10, 10 ): color 70-power dragon-type hidden power;
 }
+presets_IS_usual.minmax = {
+	{ IS_ATKDEF = 0x1F, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15,  1, 15, 15, 15 ): minmax;
+} -- Only this minmax spread is worth it, because an ATK IS of 0 with all other ISs at 15 imply an HP IS of 7, and no minmax spread of any type of hidden power has a power of hidden power of 70, since a power of hidden power of 70 requires all 4 main ISs between [ 12, 15 ], so screw those.
 IS_target_YellowMew = {
-	{ IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): flawless;
+	{ IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): flawless;
 }
 IS_target_Gengar = {
-	{ IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- ( HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): flawless;
+	{ IS_ATKDEF = 0xFF, IS_SPDSPC = 0xFF }, -- (  HP, ATK, DEF, SPD, SPC ) = ( 15, 15, 15, 15, 15 ): flawless;
 }
 IS_target_MewtwoMoltres = {
 	{ IS_ATKDEF =  nil, IS_SPDSPC = 0x01 }, -- IS_ATKDEF = any; ( SPD, SPC ) = (  0,  1 );
@@ -2285,6 +517,416 @@ IS_target_MewtwoMoltres = {
 	{ IS_ATKDEF =  nil, IS_SPDSPC = 0xD1 }, -- IS_ATKDEF = any; ( SPD, SPC ) = ( 13,  1 );
 	{ IS_ATKDEF =  nil, IS_SPDSPC = 0xE1 }, -- IS_ATKDEF = any; ( SPD, SPC ) = ( 14,  1 );
 	{ IS_ATKDEF =  nil, IS_SPDSPC = 0xF1 }, -- IS_ATKDEF = any; ( SPD, SPC ) = ( 15,  1 );
+}
+species_number_dex = {
+	[   1 ] = "bulbasaur",  [   2 ] = "ivysaur",    [   3 ] = "venusaur",
+	[   4 ] = "charmander", [   5 ] = "charmeleon", [   6 ] = "charizard",
+	[   7 ] = "squirtle",   [   8 ] = "wartortle",  [   9 ] = "blastoise",
+	[  10 ] = "caterpie",   [  11 ] = "metapod",    [  12 ] = "butterfree",
+	[  13 ] = "weedle",     [  14 ] = "kakuna",     [  15 ] = "beedrill",
+	[  16 ] = "pidgey",     [  17 ] = "pidgeotto",  [  18 ] = "pidgeot",
+	[  19 ] = "rattata",    [  20 ] = "raticate",
+	[  21 ] = "spearow",    [  22 ] = "fearow",
+	[  23 ] = "ekans",      [  24 ] = "arbok",
+	                        [  25 ] = "pikachu",    [  26 ] = "raichu",
+	[  27 ] = "sandshrew",  [  28 ] = "sandslash",
+	[  29 ] = "nidoran♀",   [  30 ] = "nidorina",   [  31 ] = "nidoqueen",
+	[  32 ] = "nidoran♂",   [  33 ] = "nidorino",   [  34 ] = "nidoking",
+	                        [  35 ] = "clefairy",   [  36 ] = "clefable",
+	[  37 ] = "vulpix",     [  38 ] = "ninetales",
+	                        [  39 ] = "jigglypuff", [  40 ] = "wigglytuff",
+	[  41 ] = "zubat",      [  42 ] = "golbat",
+	[  43 ] = "oddish",     [  44 ] = "gloom",      [  45 ] = "vileplume",
+	[  46 ] = "paras",      [  47 ] = "parasect",
+	[  48 ] = "venonat",    [  49 ] = "venomoth",
+	[  50 ] = "diglett",    [  51 ] = "dugtrio",
+	[  52 ] = "meowth",     [  53 ] = "persian",
+	[  54 ] = "psyduck",    [  55 ] = "golduck",
+	[  56 ] = "mankey",     [  57 ] = "primeape",
+	[  58 ] = "growlithe",  [  59 ] = "arcanine",
+	[  60 ] = "poliwag",    [  61 ] = "poliwhirl",  [  62 ] = "poliwrath",
+	[  63 ] = "abra",       [  64 ] = "kadabra",    [  65 ] = "alakazam",
+	[  66 ] = "machop",     [  67 ] = "machoke",    [  68 ] = "machamp",
+	[  69 ] = "bellsprout", [  70 ] = "weepinbell", [  71 ] = "victreebel",
+	[  72 ] = "tentacool",  [  73 ] = "tentacruel",
+	[  74 ] = "geodude",    [  75 ] = "graveler",   [  76 ] = "golem",
+	[  77 ] = "ponyta",     [  78 ] = "rapidash",
+	[  79 ] = "slowpoke",   [  80 ] = "slowbro",
+	[  81 ] = "magnemite",  [  82 ] = "magneton",
+	[  83 ] = "farfetch'd",
+	[  84 ] = "doduo",      [  85 ] = "dodrio",
+	[  86 ] = "seel",       [  87 ] = "dewgong",
+	[  88 ] = "grimer",     [  89 ] = "muk",
+	[  90 ] = "shellder",   [  91 ] = "cloyster",
+	[  92 ] = "gastly",     [  93 ] = "haunter",    [  94 ] = "gengar",
+	[  95 ] = "onix",
+	[  96 ] = "drowzee",    [  97 ] = "hypno",
+	[  98 ] = "krabby",     [  99 ] = "kingler",
+	[ 100 ] = "voltorb",    [ 101 ] = "electrode",
+	[ 102 ] = "exeggcute",  [ 103 ] = "exeggutor",
+	[ 104 ] = "cubone",     [ 105 ] = "marowak",
+	                        [ 106 ] = "hitmonlee",
+	                        [ 107 ] = "hitmonchan",
+	[ 108 ] = "lickitung",
+	[ 109 ] = "koffing",    [ 110 ] = "weezing",
+	[ 111 ] = "rhyhorn",    [ 112 ] = "rhydon",
+	[ 113 ] = "chansey",
+	[ 114 ] = "tangela",
+	[ 115 ] = "kangaskhan",
+	[ 116 ] = "horsea",     [ 117 ] = "seadra",
+	[ 118 ] = "goldeen",    [ 119 ] = "seaking",
+	[ 120 ] = "staryu",     [ 121 ] = "starmie",
+	[ 122 ] = "Mr. Mime",
+	[ 123 ] = "scyther",
+	                        [ 124 ] = "jynx",
+	                        [ 125 ] = "electabuzz",
+	                        [ 126 ] = "magmar",
+	[ 127 ] = "pinsir",
+	[ 128 ] = "tauros",
+	[ 129 ] = "magikarp",   [ 130 ] = "gyarados",
+	[ 131 ] = "lapras",
+	[ 132 ] = "ditto",
+	[ 133 ] = "eevee",      [ 134 ] = "vaporeon",
+	                        [ 135 ] = "jolteon",
+	                        [ 136 ] = "flareon",
+	[ 137 ] = "porygon",
+	[ 138 ] = "omanyte",    [ 139 ] = "omastar",
+	[ 140 ] = "kabuto",     [ 141 ] = "kabutops",
+	[ 142 ] = "aerodactyl",
+	[ 143 ] = "snorlax",
+	[ 144 ] = "articuno",
+	[ 145 ] = "zapdos",
+	[ 146 ] = "moltres",
+	[ 147 ] = "dratini",    [ 148 ] = "dragonair",  [ 149 ] = "dragonite",
+	[ 150 ] = "mewtwo",
+	[ 151 ] = "mew",
+	[ 152 ] = "chikorita",  [ 153 ] = "bayleef",    [ 154 ] = "meganium",
+	[ 155 ] = "cyndaquil",  [ 156 ] = "quilava",    [ 157 ] = "typhlosion",
+	[ 158 ] = "totodile",   [ 159 ] = "croconaw",   [ 160 ] = "feraligatr",
+	[ 161 ] = "sentret",    [ 162 ] = "furret",
+	[ 163 ] = "hoothoot",   [ 164 ] = "noctowl",
+	[ 165 ] = "ledyba",     [ 166 ] = "ledian",
+	[ 167 ] = "spinarak",   [ 168 ] = "ariados",
+	                                                [ 169 ] = "crobat",
+	[ 170 ] = "chinchou",   [ 171 ] = "lanturn",
+	[ 172 ] = "pichu",
+	[ 173 ] = "cleffa",
+	[ 174 ] = "igglybuff",
+	[ 175 ] = "togepi",     [ 176 ] = "togetic",
+	[ 177 ] = "natu",       [ 178 ] = "xatu",
+	[ 179 ] = "mareep",     [ 180 ] = "flaaffy",    [ 181 ] = "ampharos",
+	                                                [ 182 ] = "bellossom",
+	[ 183 ] = "marill",     [ 184 ] = "azumarill",
+	[ 185 ] = "sudowoodo",
+	                                                [ 186 ] = "politoed",
+	[ 187 ] = "hoppip",     [ 188 ] = "skiploom",   [ 189 ] = "jumpluff",
+	[ 190 ] = "aipom",
+	[ 191 ] = "sunkern",    [ 192 ] = "sunflora",
+	[ 193 ] = "yanma",
+	[ 194 ] = "wooper",     [ 195 ] = "quagsire",
+	                        [ 196 ] = "espeon",
+	                        [ 197 ] = "umbreon",
+	[ 198 ] = "murkrow",
+	                                                [ 199 ] = "slowking",
+	[ 200 ] = "misdreavus",
+	[ 201 ] = "unown",
+	[ 202 ] = "wobbuffet",
+	[ 203 ] = "girafarig",
+	[ 204 ] = "pineco",     [ 205 ] = "forretress",
+	[ 206 ] = "dunsparce",
+	[ 207 ] = "gligar",
+	                        [ 208 ] = "steelix",
+	[ 209 ] = "snubbull",   [ 210 ] = "granbull",
+	[ 211 ] = "qwilfish",
+	                        [ 212 ] = "scizor",
+	[ 213 ] = "shuckle",
+	[ 214 ] = "heracross",
+	[ 215 ] = "sneasel",
+	[ 216 ] = "teddiursa",  [ 217 ] = "ursaring",
+	[ 218 ] = "slugma",     [ 219 ] = "magcargo",
+	[ 220 ] = "swinub",     [ 221 ] = "piloswine",
+	[ 222 ] = "corsola",
+	[ 223 ] = "remoraid",   [ 224 ] = "octillery",
+	[ 225 ] = "delibird",
+	[ 226 ] = "mantine",
+	[ 227 ] = "skarmory",
+	[ 228 ] = "houndour",   [ 229 ] = "houndoom",
+	[ 230 ] = "kingdra",
+	[ 231 ] = "phanpy",     [ 232 ] = "donphan",
+	[ 233 ] = "porygon2",
+	[ 234 ] = "stantler",
+	[ 235 ] = "smeargle",
+	[ 236 ] = "tyrogue",    [ 237 ] = "hitmontop",
+	[ 238 ] = "smoochum",
+	[ 239 ] = "elekid",
+	[ 240 ] = "magby",
+	[ 241 ] = "miltank",
+	[ 242 ] = "blissey",
+	[ 243 ] = "raikou",
+	[ 244 ] = "entei",
+	[ 245 ] = "suicune",
+	[ 246 ] = "larvitar",   [ 247 ] = "pupitar",    [ 248 ] = "tyranitar",
+	[ 249 ] = "lugia",
+	[ 250 ] = "ho-oh",
+	[ 251 ] = "celebi"
+}
+item_number_index_item = {
+	[ 0x00 ] = "nothing？",
+	[ 0x01 ] = "master ball",
+	[ 0x02 ] = "ultra ball",
+	[ 0x03 ] = "bright powder",
+	[ 0x04 ] = "great ball",
+	[ 0x05 ] = "poké ball",
+	[ 0x06 ] = "カビチュウ",
+	[ 0x07 ] = "bicycle",
+	[ 0x08 ] = "moon stone",
+	[ 0x09 ] = "antidote",
+	[ 0x0A ] = "Burn Heal", -- Might be a product name in the lore or some shit.
+	[ 0x0B ] = "Ice Heal", -- Same.
+	[ 0x0C ] = "Awakening", -- Again.
+	[ 0x0D ] = "Paralyz Heal", -- And so on and so forth.
+	[ 0x0E ] = "Full Restore",
+	[ 0x0F ] = "max potion",
+	[ 0x10 ] = "hyper potion",
+	[ 0x11 ] = "super potion",
+	[ 0x12 ] = "potion",
+	[ 0x13 ] = "escape rope",
+	[ 0x14 ] = "repel",
+	[ 0x15 ] = "max elixer",
+	[ 0x16 ] = "fire stone",
+	[ 0x17 ] = "thunderstone",
+	[ 0x18 ] = "water stone",
+	[ 0x19 ] = "カビチュウ",
+	[ 0x1A ] = "HP Up",
+	[ 0x1B ] = "protein",
+	[ 0x1C ] = "iron",
+	[ 0x1D ] = "Carbos",
+	[ 0x1E ] = "lucky punch",
+	[ 0x1F ] = "calcium",
+	[ 0x20 ] = "rare candy",
+	[ 0x21 ] = "X Accuracy",
+	[ 0x22 ] = "leaf stone",
+	[ 0x23 ] = "metal powder",
+	[ 0x24 ] = "nugget",
+	[ 0x25 ] = "poké doll",
+	[ 0x26 ] = "Full Heal",
+	[ 0x27 ] = "Revive",
+	[ 0x28 ] = "Max Revive",
+	[ 0x29 ] = "Guard Spec.",
+	[ 0x2A ] = "Super Repel",
+	[ 0x2B ] = "Max Repel",
+	[ 0x2C ] = "Dire Hit",
+	[ 0x2D ] = "カビチュウ",
+	[ 0x2E ] = "fresh water",
+	[ 0x2F ] = "soda pop",
+	[ 0x30 ] = "lemonade",
+	[ 0x31 ] = "X Attack",
+	[ 0x32 ] = "カビチュウ",
+	[ 0x33 ] = "X Defend",
+	[ 0x34 ] = "X Speed",
+	[ 0x35 ] = "X Special",
+	[ 0x36 ] = "coin case",
+	[ 0x37 ] = "item finder",
+	[ 0x38 ] = "カビチュウ",
+	[ 0x39 ] = "exp. share",
+	[ 0x3A ] = "old rod",
+	[ 0x3B ] = "good rod",
+	[ 0x3C ] = "silver leaf",
+	[ 0x3D ] = "super rod",
+	[ 0x3E ] = "PP Up",
+	[ 0x3F ] = "ether",
+	[ 0x40 ] = "max ether",
+	[ 0x41 ] = "elixer",
+	[ 0x42 ] = "red scale",
+	[ 0x43 ] = "secret potion",
+	[ 0x44 ] = "S.S. ticket",
+	[ 0x45 ] = "mystery egg",
+	[ 0x46 ] = "clear bell",
+	[ 0x47 ] = "silver wing",
+	[ 0x48 ] = "Moomoo Milk",
+	[ 0x49 ] = "quick claw",
+	[ 0x4A ] = "PSN cure berry",
+	[ 0x4B ] = "gold leaf",
+	[ 0x4C ] = "soft sand",
+	[ 0x4D ] = "sharp beak",
+	[ 0x4E ] = "PRZ cure berry",
+	[ 0x4F ] = "burnt berry",
+	[ 0x50 ] = "ice berry",
+	[ 0x51 ] = "poison barb",
+	[ 0x52 ] = "king's rock",
+	[ 0x53 ] = "bitter berry",
+	[ 0x54 ] = "mint berry",
+	[ 0x55 ] = "red apricorn",
+	[ 0x56 ] = "tiny mushroom",
+	[ 0x57 ] = "big mushroom",
+	[ 0x58 ] = "silver powder",
+	[ 0x59 ] = "blue apricorn",
+	[ 0x5A ] = "カビチュウ",
+	[ 0x5B ] = "amulet coin",
+	[ 0x5C ] = "yellow apricorn",
+	[ 0x5D ] = "green apricorn",
+	[ 0x5E ] = "cleanse tag",
+	[ 0x5F ] = "mystic water",
+	[ 0x60 ] = "twisted spoon",
+	[ 0x61 ] = "white apricorn",
+	[ 0x62 ] = "black belt",
+	[ 0x63 ] = "black apricorn",
+	[ 0x64 ] = "カビチュウ",
+	[ 0x65 ] = "pink apricorn",
+	[ 0x66 ] = "black glasses",
+	[ 0x67 ] = "slowpoke tail",
+	[ 0x68 ] = "pink bow",
+	[ 0x69 ] = "stick",
+	[ 0x6A ] = "smoke ball",
+	[ 0x6B ] = "never-melt ice",
+	[ 0x6C ] = "magnet",
+	[ 0x6D ] = "miracle berry",
+	[ 0x6E ] = "pearl",
+	[ 0x6F ] = "big pearl",
+	[ 0x70 ] = "everstone",
+	[ 0x71 ] = "spell tag",
+	[ 0x72 ] = "Rage Candy Bar",
+	[ 0x73 ] = "GS ball",
+	[ 0x74 ] = "blue card",
+	[ 0x75 ] = "miracle seed",
+	[ 0x76 ] = "thick club",
+	[ 0x77 ] = "focus band",
+	[ 0x78 ] = "カビチュウ",
+	[ 0x79 ] = "energy powder",
+	[ 0x7A ] = "energy root",
+	[ 0x7B ] = "Heal Powder",
+	[ 0x7C ] = "revival herb",
+	[ 0x7D ] = "hard stone",
+	[ 0x7E ] = "lucky egg",
+	[ 0x7F ] = "card key",
+	[ 0x80 ] = "machine part",
+	[ 0x81 ] = "egg ticket",
+	[ 0x82 ] = "lost item",
+	[ 0x83 ] = "star dust",
+	[ 0x84 ] = "star piece",
+	[ 0x85 ] = "basement key",
+	[ 0x86 ] = "pass",
+	[ 0x87 ] = "カビチュウ",
+	[ 0x88 ] = "カビチュウ",
+	[ 0x89 ] = "カビチュウ",
+	[ 0x8A ] = "charcoal",
+	[ 0x8B ] = "berry juice",
+	[ 0x8C ] = "scope lens",
+	[ 0x8D ] = "カビチュウ",
+	[ 0x8E ] = "カビチュウ",
+	[ 0x8F ] = "metal coat",
+	[ 0x90 ] = "dragon fang",
+	[ 0x91 ] = "カビチュウ",
+	[ 0x92 ] = "leftovers",
+	[ 0x93 ] = "カビチュウ",
+	[ 0x94 ] = "カビチュウ",
+	[ 0x95 ] = "カビチュウ",
+	[ 0x96 ] = "mystery berry",
+	[ 0x97 ] = "dragon scale",
+	[ 0x98 ] = "berserk gene",
+	[ 0x99 ] = "カビチュウ",
+	[ 0x9A ] = "カビチュウ",
+	[ 0x9B ] = "カビチュウ",
+	[ 0x9C ] = "sacred ash",
+	[ 0x9D ] = "heavy ball",
+	[ 0x9E ] = "flower mail",
+	[ 0x9F ] = "level ball",
+	[ 0xA0 ] = "lure ball",
+	[ 0xA1 ] = "fast ball",
+	[ 0xA2 ] = "カビチュウ",
+	[ 0xA3 ] = "light ball",
+	[ 0xA4 ] = "friend ball",
+	[ 0xA5 ] = "moon ball",
+	[ 0xA6 ] = "love ball",
+	[ 0xA7 ] = "normal box",
+	[ 0xA8 ] = "gorgeous box",
+	[ 0xA9 ] = "sun stone",
+	[ 0xAA ] = "polkadot bow",
+	[ 0xAB ] = "カビチュウ",
+	[ 0xAC ] = "upgrade",
+	[ 0xAD ] = "berry",
+	[ 0xAE ] = "gold berry",
+	[ 0xAF ] = "squirt bottle",
+	[ 0xB0 ] = "カビチュウ",
+	[ 0xB1 ] = "park ball",
+	[ 0xB2 ] = "rainbow wing",
+	[ 0xB3 ] = "カビチュウ",
+	[ 0xB4 ] = "brick piece",
+	[ 0xB5 ] = "surf mail",
+	[ 0xB6 ] = "lite blue mail",
+	[ 0xB7 ] = "portrait mail",
+	[ 0xB8 ] = "lovely mail",
+	[ 0xB9 ] = "eon mail",
+	[ 0xBA ] = "morph mail",
+	[ 0xBB ] = "blue sky mail",
+	[ 0xBC ] = "music mail",
+	[ 0xBD ] = "mirage mail",
+	[ 0xBE ] = "カビチュウ",
+	[ 0xBF ] = "TM01",
+	[ 0xC0 ] = "TM02",
+	[ 0xC1 ] = "TM03",
+	[ 0xC2 ] = "TM04",
+	[ 0xC3 ] = "TM04", -- What the fuck? This isn't even a TM by the way.
+	[ 0xC4 ] = "TM05",
+	[ 0xC5 ] = "TM06",
+	[ 0xC6 ] = "TM07",
+	[ 0xC7 ] = "TM08",
+	[ 0xC8 ] = "TM09",
+	[ 0xC9 ] = "TM10",
+	[ 0xCA ] = "TM11",
+	[ 0xCB ] = "TM12",
+	[ 0xCC ] = "TM13",
+	[ 0xCD ] = "TM14",
+	[ 0xCE ] = "TM15",
+	[ 0xCF ] = "TM16",
+	[ 0xD0 ] = "TM17",
+	[ 0xD1 ] = "TM18",
+	[ 0xD2 ] = "TM19",
+	[ 0xD3 ] = "TM20",
+	[ 0xD4 ] = "TM21",
+	[ 0xD5 ] = "TM22",
+	[ 0xD6 ] = "TM23",
+	[ 0xD7 ] = "TM24",
+	[ 0xD8 ] = "TM25",
+	[ 0xD9 ] = "TM26",
+	[ 0xDA ] = "TM27",
+	[ 0xDB ] = "TM28",
+	[ 0xDC ] = "TM28", -- Again!?...
+	[ 0xDD ] = "TM29",
+	[ 0xDE ] = "TM30",
+	[ 0xDF ] = "TM31",
+	[ 0xE0 ] = "TM32",
+	[ 0xE1 ] = "TM33",
+	[ 0xE2 ] = "TM34",
+	[ 0xE3 ] = "TM35",
+	[ 0xE4 ] = "TM36",
+	[ 0xE5 ] = "TM37",
+	[ 0xE6 ] = "TM38",
+	[ 0xE7 ] = "TM39",
+	[ 0xE8 ] = "TM40",
+	[ 0xE9 ] = "TM41",
+	[ 0xEA ] = "TM42",
+	[ 0xEB ] = "TM43",
+	[ 0xEC ] = "TM44",
+	[ 0xED ] = "TM45",
+	[ 0xEE ] = "TM46",
+	[ 0xEF ] = "TM47",
+	[ 0xF0 ] = "TM48",
+	[ 0xF1 ] = "TM49",
+	[ 0xF2 ] = "TM50",
+	[ 0xF3 ] = "HM01",
+	[ 0xF4 ] = "HM02",
+	[ 0xF5 ] = "HM03",
+	[ 0xF6 ] = "HM04",
+	[ 0xF7 ] = "HM05",
+	[ 0xF8 ] = "HM06",
+	[ 0xF9 ] = "HM07", -- None of the HMs after this one is an actual HM. I guess they were going to make other utility moves HMs. HMs are just TMs with a child safety lock: they're meant to prevent players from soft-locking themselves in the game, for example getting stranded in Cianwood City [it can be achieved anyway].
+	[ 0xFA ] = "HM08",
+	[ 0xFB ] = "HM09",
+	[ 0xFC ] = "HM10",
+	[ 0xFD ] = "HM11",
+	[ 0xFE ] = "HM12",
+	[ 0xFF ] = "cancel" -- This is the menu entry.
 }
 print(string.format("Running %s.", filename)) --"rgbylong-rangetrainerflyglitch.lua")
 
@@ -2380,10 +1022,10 @@ function print_IS( IS_ATKDEF, IS_SPDSPC )
 	n_SPD = shift_right(
 		bitwiseand( IS_SPDSPC, shift_left( 1, 8 ) - shift_left( 1, 4 ) ), 4 )
 	n_SPC = bitwiseand( IS_SPDSPC, shift_left( 1, 4 ) - 1 )
-	n_HP = shift_left( bitwiseand( n_ATK, 0x01 ), 3 )
-		 + shift_left( bitwiseand( n_DEF, 0x01 ), 2 )
-		 + shift_left( bitwiseand( n_SPD, 0x01 ), 1 )
-		 + bitwiseand( n_SPC, 0x01 )
+	n_HP  = shift_left( bitwiseand( n_ATK, 0x01 ), 3 )
+		  + shift_left( bitwiseand( n_DEF, 0x01 ), 2 )
+		  + shift_left( bitwiseand( n_SPD, 0x01 ), 1 )
+		  + bitwiseand( n_SPC, 0x01 )
 	print(string.format("( HP, ATK, DEF, SPD, SPC ) = ( %d, %d, %d, %d, %d )", n_HP, n_ATK, n_DEF, n_SPD, n_SPC ))
 	print(string.format("IS: 0x%02X 0x%02X;", IS_ATKDEF, IS_SPDSPC ))
 end
@@ -2843,7 +1485,7 @@ function detect_egg()
 	local status_daycare
 
 	status_daycare = memory.readbyte( address_status_daycare )
-	return math.floor( status_daycare / 0x40 ) - 2 * math.floor( status_daycare / 0x80 ) == 1 -- The bit 0x40 (bit 6 )'s set: an egg's been readied.
+	return math.floor( status_daycare / 0x40 ) - 2 * math.floor( status_daycare / 0x80 ) == 1 -- The bit 0x40 ( 6 )'s set: an egg's been readied.
 end
 
 function turn_back( direction_name ) --reverse_direction
@@ -3071,7 +1713,7 @@ function hatch()
 	for n_wait = 1, 60 do
 		emu.frameadvance()
 	end
-	print(string.format("Hatched the egg, species %d ( 0x%02X ).", memory.readbyte( party_mon_address ), memory.readbyte( party_mon_address ) ))
+	print(string.format("Hatched the %s egg, species %d ( 0x%02X ).", species_number_dex[ memory.readbyte( party_mon_address ) ], memory.readbyte( party_mon_address ), memory.readbyte( party_mon_address ) )) --print(string.format("Hatched the egg, species %d ( 0x%02X ).", memory.readbyte( party_mon_address ), memory.readbyte( party_mon_address ) ))
 	print("Stopped the script.")
 	state = savestate.create()
 	savestate.save( state )
@@ -3101,7 +1743,7 @@ function walktogether() --befriend()
 		number_steps = 0
 
 		print("Walking with the 'mon in party slot " .. party_slot .. ".")
-		print(string.format("species: %d, 0x%02X;", species, species ))
+		print(string.format("%s, species: %d;", species_number_dex[ species ], species )) --print(string.format("species: %d, 0x%02X;", species, species ))
 		print("initial friendship level: " .. friendship .. ".")
 		print("target friendship level: " .. friendship_target .. ".")
 		while friendship < friendship_target do
@@ -3180,7 +1822,7 @@ function walktogether() --befriend()
 		friendship_last = -1
 		number_steps = 0
 		print("Walking with the 'mon in party slot " .. slot_Pikachu .. ".")
-		print(string.format("species: %d, 0x%02X;", species, species ))
+		print(string.format("%s, species: %d;", species_number_dex[ species ], species )) --print(string.format("species: %d, 0x%02X;", species, species ))
 		print("initial friendship level: " .. friendship .. ".")
 		print("target friendship level: " .. friendship_target .. ".")
 		while friendship < friendship_target do
@@ -3307,6 +1949,11 @@ function get()
 end
 
 function catch()
+	if game == "RGBY" then
+		n_frame_delay = 501
+	elseif game == "GSC" then
+		n_frame_delay = 764
+	end -- calculated empirically quick and dirty from Green and the Japanese Crystal Version, as it's 01:11:11, and I'm gonna sleep, so I might have minimized the delay no better than approximately.
 	local state
 
 	state = savestate.create()
@@ -3317,8 +1964,6 @@ function catch()
 			print("Caught the 'mon.")
 			savestate.save( state )
 			return
-		elseif game ~= "GSC" and game ~= "RGBY" then
-			stop( string.format("Don't know the version %4x.", version_byte ) )
 		end
 		print("Missed the 'mon.")
 		savestate.load( state )
@@ -3370,26 +2015,44 @@ function encounter()
 	build_target_IS_list()
 	if game == "RGBY" then
 		list_species_RGBY = {
-			[ 0x01 ] = 112, [ 0x02 ] = 115, [ 0x03 ] = 32, [ 0x04 ] = 35, [ 0x05 ] = 21, [ 0x06 ] = 100, [ 0x07 ] = 34, [ 0x08 ] = 80,
-			[ 0x09 ] = 2, [ 0x0A ] = 103, [ 0x0B ] = 108, [ 0x0C ] = 102, [ 0x0D ] = 88, [ 0x0E ] = 94, [ 0x0F ] = 29, [ 0x10 ] = 31,
-			[ 0x11 ] = 104, [ 0x12 ] = 111, [ 0x13 ] = 131, [ 0x14 ] = 59, [ 0x15 ] = 151, [ 0x16 ] = 130, [ 0x17 ] = 90, [ 0x18 ] = 72,
-			[ 0x19 ] = 92, [ 0x1A ] = 123, [ 0x1B ] = 120, [ 0x1C ] = 9, [ 0x1D ] = 127, [ 0x1E ] = 114,
-			[ 0x21 ] = 58, [ 0x22 ] = 95, [ 0x23 ] = 22, [ 0x24 ] = 16, [ 0x25 ] = 79, [ 0x26 ] = 64, [ 0x27 ] = 75, [ 0x28 ] = 113,
-			[ 0x29 ] = 67, [ 0x2A ] = 122, [ 0x2B ] = 106, [ 0x2C ] = 107, [ 0x2D ] = 24, [ 0x2E ] = 47, [ 0x2F ] = 54, [ 0x30 ] = 96,
-			[ 0x31 ] = 76, [ 0x33 ] = 126, [ 0x35 ] = 125, [ 0x36 ] = 82, [ 0x37 ] = 109, [ 0x39 ] = 56, [ 0x3A ] = 86, [ 0x3B ] = 50,
-			[ 0x3C ] = 128, [ 0x40 ] = 83, [ 0x41 ] = 48, [ 0x42 ] = 149, [ 0x46 ] = 84, [ 0x47 ] = 60, [ 0x48 ] = 124, [ 0x49 ] = 146,
-			[ 0x4A ] = 144, [ 0x4B ] = 145, [ 0x4C ] = 132, [ 0x4D ] = 52, [ 0x4E ] = 98, [ 0x52 ] = 37, [ 0x53 ] = 38, [ 0x54 ] = 25,
-			[ 0x55 ] = 26, [ 0x58 ] = 147, [ 0x59 ] = 148, [ 0x5A ] = 140, [ 0x5B ] = 141, [ 0x5C ] = 116, [ 0x5D ] = 117,
-			[ 0x60 ] = 27, [ 0x61 ] = 28, [ 0x62 ] = 138, [ 0x63 ] = 139, [ 0x64 ] = 39, [ 0x65 ] = 40, [ 0x66 ] = 133, [ 0x67 ] = 136,
-			[ 0x68 ] = 135, [ 0x69 ] = 134, [ 0x6A ] = 66, [ 0x6B ] = 41, [ 0x6C ] = 23, [ 0x6D ] = 46, [ 0x6E ] = 61, [ 0x6F ] = 62,
-			[ 0x70 ] = 13, [ 0x71 ] = 14, [ 0x72 ] = 15, [ 0x74 ] = 85, [ 0x75 ] = 57, [ 0x76 ] = 51, [ 0x77 ] = 49, [ 0x78 ] = 87,
-			[ 0x7B ] = 10, [ 0x7C ] = 11, [ 0x7D ] = 12, [ 0x7E ] = 68, [ 0x80 ] = 55, [ 0x81 ] = 97, [ 0x82 ] = 42, [ 0x83 ] = 150,
-			[ 0x84 ] = 143, [ 0x85 ] = 129, [ 0x88 ] = 89, [ 0x8A ] = 99, [ 0x8B ] = 91, [ 0x8D ] = 101, [ 0x8E ] = 36, [ 0x8F ] = 110,
-			[ 0x90 ] = 53, [ 0x91 ] = 105, [ 0x93 ] = 93, [ 0x94 ] = 63, [ 0x95 ] = 65, [ 0x96 ] = 17, [ 0x97 ] = 18, [ 0x98 ] = 121,
-			[ 0x99 ] = 1, [ 0x9A ] = 3, [ 0x9B ] = 73, [ 0x9D ] = 118, [ 0x9E ] = 119, [ 0xA3 ] = 77, [ 0xA4 ] = 78, [ 0xA5 ] = 19,
-			[ 0xA6 ] = 20, [ 0xA7 ] = 33, [ 0xA8 ] = 30, [ 0xA9 ] = 74, [ 0xAA ] = 137, [ 0xAB ] = 142, [ 0xAD ] = 81,
-			[ 0xB0 ] = 4, [ 0xB1 ] = 7, [ 0xB2 ] = 5, [ 0xB3 ] = 8, [ 0xB4 ] = 6, [ 0xB9 ] = 43, [ 0xBA ] = 44, [ 0xBB ] = 45,
-			[ 0xBC ] = 69, [ 0xBD ] = 70, [ 0xBE ] = 71,
+			[ 0x01 ] = 112, [ 0x02 ] = 115, [ 0x03 ] =  32, [ 0x04 ] =  35,
+			[ 0x05 ] =  21, [ 0x06 ] = 100, [ 0x07 ] =  34, [ 0x08 ] =  80,
+			[ 0x09 ] =   2, [ 0x0A ] = 103, [ 0x0B ] = 108, [ 0x0C ] = 102,
+			[ 0x0D ] =  88, [ 0x0E ] =  94, [ 0x0F ] =  29, [ 0x10 ] =  31,
+			[ 0x11 ] = 104, [ 0x12 ] = 111, [ 0x13 ] = 131, [ 0x14 ] =  59,
+			[ 0x15 ] = 151, [ 0x16 ] = 130, [ 0x17 ] =  90, [ 0x18 ] =  72,
+			[ 0x19 ] =  92, [ 0x1A ] = 123, [ 0x1B ] = 120, [ 0x1C ] =   9,
+			[ 0x1D ] = 127, [ 0x1E ] = 114, [ 0x21 ] =  58, [ 0x22 ] =  95,
+			[ 0x23 ] =  22, [ 0x24 ] =  16, [ 0x25 ] =  79, [ 0x26 ] =  64,
+			[ 0x27 ] =  75, [ 0x28 ] = 113, [ 0x29 ] =  67, [ 0x2A ] = 122,
+			[ 0x2B ] = 106, [ 0x2C ] = 107, [ 0x2D ] =  24, [ 0x2E ] =  47,
+			[ 0x2F ] =  54, [ 0x30 ] =  96, [ 0x31 ] =  76, [ 0x33 ] = 126,
+			[ 0x35 ] = 125, [ 0x36 ] =  82, [ 0x37 ] = 109, [ 0x39 ] =  56,
+			[ 0x3A ] =  86, [ 0x3B ] =  50, [ 0x3C ] = 128, [ 0x40 ] =  83,
+			[ 0x41 ] =  48, [ 0x42 ] = 149, [ 0x46 ] =  84, [ 0x47 ] =  60,
+			[ 0x48 ] = 124, [ 0x49 ] = 146, [ 0x4A ] = 144, [ 0x4B ] = 145,
+			[ 0x4C ] = 132, [ 0x4D ] =  52, [ 0x4E ] =  98, [ 0x52 ] =  37,
+			[ 0x53 ] =  38, [ 0x54 ] =  25, [ 0x55 ] =  26, [ 0x58 ] = 147,
+			[ 0x59 ] = 148, [ 0x5A ] = 140, [ 0x5B ] = 141, [ 0x5C ] = 116,
+			[ 0x5D ] = 117, [ 0x60 ] =  27, [ 0x61 ] =  28, [ 0x62 ] = 138,
+			[ 0x63 ] = 139, [ 0x64 ] =  39, [ 0x65 ] =  40, [ 0x66 ] = 133,
+			[ 0x67 ] = 136, [ 0x68 ] = 135, [ 0x69 ] = 134, [ 0x6A ] =  66,
+			[ 0x6B ] =  41, [ 0x6C ] =  23, [ 0x6D ] =  46, [ 0x6E ] =  61,
+			[ 0x6F ] =  62, [ 0x70 ] =  13, [ 0x71 ] =  14, [ 0x72 ] =  15,
+			[ 0x74 ] =  85, [ 0x75 ] =  57, [ 0x76 ] =  51, [ 0x77 ] =  49,
+			[ 0x78 ] =  87, [ 0x7B ] =  10, [ 0x7C ] =  11, [ 0x7D ] =  12,
+			[ 0x7E ] =  68, [ 0x80 ] =  55, [ 0x81 ] =  97, [ 0x82 ] =  42,
+			[ 0x83 ] = 150, [ 0x84 ] = 143, [ 0x85 ] = 129, [ 0x88 ] =  89,
+			[ 0x8A ] =  99, [ 0x8B ] =  91, [ 0x8D ] = 101, [ 0x8E ] =  36,
+			[ 0x8F ] = 110, [ 0x90 ] =  53, [ 0x91 ] = 105, [ 0x93 ] =  93,
+			[ 0x94 ] =  63, [ 0x95 ] =  65, [ 0x96 ] =  17, [ 0x97 ] =  18,
+			[ 0x98 ] = 121, [ 0x99 ] =   1, [ 0x9A ] =   3, [ 0x9B ] =  73,
+			[ 0x9D ] = 118, [ 0x9E ] = 119, [ 0xA3 ] =  77, [ 0xA4 ] =  78,
+			[ 0xA5 ] =  19, [ 0xA6 ] =  20, [ 0xA7 ] =  33, [ 0xA8 ] =  30,
+			[ 0xA9 ] =  74, [ 0xAA ] = 137, [ 0xAB ] = 142, [ 0xAD ] =  81,
+			[ 0xB0 ] =   4, [ 0xB1 ] =   7, [ 0xB2 ] =   5, [ 0xB3 ] =   8,
+			[ 0xB4 ] =   6, [ 0xB9 ] =  43, [ 0xBA ] =  44, [ 0xBB ] =  45,
+			[ 0xBC ] =  69, [ 0xBD ] =  70, [ 0xBE ] =  71,
 		}
 		address_species = address_mon_wild - 0x0C
 		state = savestate.create()
@@ -3416,9 +2079,7 @@ function encounter()
 				return
 			end
 			if not accept_target_species( species ) then
-				print("Rejecting the species.")
-				print( string.format("species: %d, 0x%02X;", species, species ) )
-				print( string.format("RGBY species index: %d, 0x%02X;", species_RGBY, species_RGBY ) )
+				print(string.format("Rejecting the %s, species %d, RGBY index %d.", species_number_dex[ species ], species, species_RGBY )) --print("Rejecting the species.") --print( string.format("species: %d, 0x%02X;", species, species ) ) --print(string.format("%s, species: %d;", species_number_dex[ species ], species_RGBY )) --print( string.format("RGBY species index: %d, 0x%02X;", species_RGBY, species_RGBY ) )
 				print_IS( IS_ATKDEF, IS_SPDSPC )
 			else
 				print("Rejecting the spread.")
@@ -3486,7 +2147,7 @@ function encounter()
 				end
 			end
 			species = memory.readbyte( address_species )
-			print(string.format("species: %d;", species ))
+			print(string.format("%s, species: %d;", species_number_dex[ species ], species )) --print(string.format("species: %d;", species ))
 			if not accept_target_species( species ) then
 				savestate.load( state )
 			else
@@ -3527,26 +2188,44 @@ function fish()
 	state = savestate.create()
 	if game == "RGBY" then
 		list_species_RGBY = {
-			[ 0x01 ] = 112, [ 0x02 ] = 115, [ 0x03 ] = 32, [ 0x04 ] = 35, [ 0x05 ] = 21, [ 0x06 ] = 100, [ 0x07 ] = 34, [ 0x08 ] = 80,
-			[ 0x09 ] = 2, [ 0x0A ] = 103, [ 0x0B ] = 108, [ 0x0C ] = 102, [ 0x0D ] = 88, [ 0x0E ] = 94, [ 0x0F ] = 29, [ 0x10 ] = 31,
-			[ 0x11 ] = 104, [ 0x12 ] = 111, [ 0x13 ] = 131, [ 0x14 ] = 59, [ 0x15 ] = 151, [ 0x16 ] = 130, [ 0x17 ] = 90, [ 0x18 ] = 72,
-			[ 0x19 ] = 92, [ 0x1A ] = 123, [ 0x1B ] = 120, [ 0x1C ] = 9, [ 0x1D ] = 127, [ 0x1E ] = 114,
-			[ 0x21 ] = 58, [ 0x22 ] = 95, [ 0x23 ] = 22, [ 0x24 ] = 16, [ 0x25 ] = 79, [ 0x26 ] = 64, [ 0x27 ] = 75, [ 0x28 ] = 113,
-			[ 0x29 ] = 67, [ 0x2A ] = 122, [ 0x2B ] = 106, [ 0x2C ] = 107, [ 0x2D ] = 24, [ 0x2E ] = 47, [ 0x2F ] = 54, [ 0x30 ] = 96,
-			[ 0x31 ] = 76, [ 0x33 ] = 126, [ 0x35 ] = 125, [ 0x36 ] = 82, [ 0x37 ] = 109, [ 0x39 ] = 56, [ 0x3A ] = 86, [ 0x3B ] = 50,
-			[ 0x3C ] = 128, [ 0x40 ] = 83, [ 0x41 ] = 48, [ 0x42 ] = 149, [ 0x46 ] = 84, [ 0x47 ] = 60, [ 0x48 ] = 124, [ 0x49 ] = 146,
-			[ 0x4A ] = 144, [ 0x4B ] = 145, [ 0x4C ] = 132, [ 0x4D ] = 52, [ 0x4E ] = 98, [ 0x52 ] = 37, [ 0x53 ] = 38, [ 0x54 ] = 25,
-			[ 0x55 ] = 26, [ 0x58 ] = 147, [ 0x59 ] = 148, [ 0x5A ] = 140, [ 0x5B ] = 141, [ 0x5C ] = 116, [ 0x5D ] = 117,
-			[ 0x60 ] = 27, [ 0x61 ] = 28, [ 0x62 ] = 138, [ 0x63 ] = 139, [ 0x64 ] = 39, [ 0x65 ] = 40, [ 0x66 ] = 133, [ 0x67 ] = 136,
-			[ 0x68 ] = 135, [ 0x69 ] = 134, [ 0x6A ] = 66, [ 0x6B ] = 41, [ 0x6C ] = 23, [ 0x6D ] = 46, [ 0x6E ] = 61, [ 0x6F ] = 62,
-			[ 0x70 ] = 13, [ 0x71 ] = 14, [ 0x72 ] = 15, [ 0x74 ] = 85, [ 0x75 ] = 57, [ 0x76 ] = 51, [ 0x77 ] = 49, [ 0x78 ] = 87,
-			[ 0x7B ] = 10, [ 0x7C ] = 11, [ 0x7D ] = 12, [ 0x7E ] = 68, [ 0x80 ] = 55, [ 0x81 ] = 97, [ 0x82 ] = 42, [ 0x83 ] = 150,
-			[ 0x84 ] = 143, [ 0x85 ] = 129, [ 0x88 ] = 89, [ 0x8A ] = 99, [ 0x8B ] = 91, [ 0x8D ] = 101, [ 0x8E ] = 36, [ 0x8F ] = 110,
-			[ 0x90 ] = 53, [ 0x91 ] = 105, [ 0x93 ] = 93, [ 0x94 ] = 63, [ 0x95 ] = 65, [ 0x96 ] = 17, [ 0x97 ] = 18, [ 0x98 ] = 121,
-			[ 0x99 ] = 1, [ 0x9A ] = 3, [ 0x9B ] = 73, [ 0x9D ] = 118, [ 0x9E ] = 119, [ 0xA3 ] = 77, [ 0xA4 ] = 78, [ 0xA5 ] = 19,
-			[ 0xA6 ] = 20, [ 0xA7 ] = 33, [ 0xA8 ] = 30, [ 0xA9 ] = 74, [ 0xAA ] = 137, [ 0xAB ] = 142, [ 0xAD ] = 81,
-			[ 0xB0 ] = 4, [ 0xB1 ] = 7, [ 0xB2 ] = 5, [ 0xB3 ] = 8, [ 0xB4 ] = 6, [ 0xB9 ] = 43, [ 0xBA ] = 44, [ 0xBB ] = 45,
-			[ 0xBC ] = 69, [ 0xBD ] = 70, [ 0xBE ] = 71,
+			[ 0x01 ] = 112, [ 0x02 ] = 115, [ 0x03 ] =  32, [ 0x04 ] =  35,
+			[ 0x05 ] =  21, [ 0x06 ] = 100, [ 0x07 ] =  34, [ 0x08 ] =  80,
+			[ 0x09 ] =   2, [ 0x0A ] = 103, [ 0x0B ] = 108, [ 0x0C ] = 102,
+			[ 0x0D ] =  88, [ 0x0E ] =  94, [ 0x0F ] =  29, [ 0x10 ] =  31,
+			[ 0x11 ] = 104, [ 0x12 ] = 111, [ 0x13 ] = 131, [ 0x14 ] =  59,
+			[ 0x15 ] = 151, [ 0x16 ] = 130, [ 0x17 ] =  90, [ 0x18 ] =  72,
+			[ 0x19 ] =  92, [ 0x1A ] = 123, [ 0x1B ] = 120, [ 0x1C ] =   9,
+			[ 0x1D ] = 127, [ 0x1E ] = 114, [ 0x21 ] =  58, [ 0x22 ] =  95,
+			[ 0x23 ] =  22, [ 0x24 ] =  16, [ 0x25 ] =  79, [ 0x26 ] =  64,
+			[ 0x27 ] =  75, [ 0x28 ] = 113, [ 0x29 ] =  67, [ 0x2A ] = 122,
+			[ 0x2B ] = 106, [ 0x2C ] = 107, [ 0x2D ] =  24, [ 0x2E ] =  47,
+			[ 0x2F ] =  54, [ 0x30 ] =  96, [ 0x31 ] =  76, [ 0x33 ] = 126,
+			[ 0x35 ] = 125, [ 0x36 ] =  82, [ 0x37 ] = 109, [ 0x39 ] =  56,
+			[ 0x3A ] =  86, [ 0x3B ] =  50, [ 0x3C ] = 128, [ 0x40 ] =  83,
+			[ 0x41 ] =  48, [ 0x42 ] = 149, [ 0x46 ] =  84, [ 0x47 ] =  60,
+			[ 0x48 ] = 124, [ 0x49 ] = 146, [ 0x4A ] = 144, [ 0x4B ] = 145,
+			[ 0x4C ] = 132, [ 0x4D ] =  52, [ 0x4E ] =  98, [ 0x52 ] =  37,
+			[ 0x53 ] =  38, [ 0x54 ] =  25, [ 0x55 ] =  26, [ 0x58 ] = 147,
+			[ 0x59 ] = 148, [ 0x5A ] = 140, [ 0x5B ] = 141, [ 0x5C ] = 116,
+			[ 0x5D ] = 117, [ 0x60 ] =  27, [ 0x61 ] =  28, [ 0x62 ] = 138,
+			[ 0x63 ] = 139, [ 0x64 ] =  39, [ 0x65 ] =  40, [ 0x66 ] = 133,
+			[ 0x67 ] = 136, [ 0x68 ] = 135, [ 0x69 ] = 134, [ 0x6A ] =  66,
+			[ 0x6B ] =  41, [ 0x6C ] =  23, [ 0x6D ] =  46, [ 0x6E ] =  61,
+			[ 0x6F ] =  62, [ 0x70 ] =  13, [ 0x71 ] =  14, [ 0x72 ] =  15,
+			[ 0x74 ] =  85, [ 0x75 ] =  57, [ 0x76 ] =  51, [ 0x77 ] =  49,
+			[ 0x78 ] =  87, [ 0x7B ] =  10, [ 0x7C ] =  11, [ 0x7D ] =  12,
+			[ 0x7E ] =  68, [ 0x80 ] =  55, [ 0x81 ] =  97, [ 0x82 ] =  42,
+			[ 0x83 ] = 150, [ 0x84 ] = 143, [ 0x85 ] = 129, [ 0x88 ] =  89,
+			[ 0x8A ] =  99, [ 0x8B ] =  91, [ 0x8D ] = 101, [ 0x8E ] =  36,
+			[ 0x8F ] = 110, [ 0x90 ] =  53, [ 0x91 ] = 105, [ 0x93 ] =  93,
+			[ 0x94 ] =  63, [ 0x95 ] =  65, [ 0x96 ] =  17, [ 0x97 ] =  18,
+			[ 0x98 ] = 121, [ 0x99 ] =   1, [ 0x9A ] =   3, [ 0x9B ] =  73,
+			[ 0x9D ] = 118, [ 0x9E ] = 119, [ 0xA3 ] =  77, [ 0xA4 ] =  78,
+			[ 0xA5 ] =  19, [ 0xA6 ] =  20, [ 0xA7 ] =  33, [ 0xA8 ] =  30,
+			[ 0xA9 ] =  74, [ 0xAA ] = 137, [ 0xAB ] = 142, [ 0xAD ] =  81,
+			[ 0xB0 ] =   4, [ 0xB1 ] =   7, [ 0xB2 ] =   5, [ 0xB3 ] =   8,
+			[ 0xB4 ] =   6, [ 0xB9 ] =  43, [ 0xBA ] =  44, [ 0xBB ] =  45,
+			[ 0xBC ] =  69, [ 0xBD ] =  70, [ 0xBE ] =  71,
 		}
 		address_flag_fish = 0xCD3D
 		if region_name == "JP" then
@@ -3607,9 +2286,7 @@ function fish()
 						savestate.load( state )
 					end
 				else
-					print("Rejecting the species.")
-					print( string.format("species: %d, 0x%02X;", species, species ) )
-					print( string.format("RGBY species index: %d, 0x%02X;", species_RGBY, species_RGBY ) )
+					print(string.format("Rejecting the %s, species %d, RGBY index %d.", species_number_dex[ species ], species, species_RGBY )) --print("Rejecting the species.") --print( string.format("species: %d, 0x%02X;", species, species ) ) --print(string.format("%s, species: %d;", species_number_dex[ species ], species_RGBY )) --print( string.format("RGBY species index: %d, 0x%02X;", species_RGBY, species_RGBY ) )
 					savestate.load( state )
 				end
 			else
@@ -3635,11 +2312,10 @@ function fish()
 					species = memory.readbyte( address_species )
 				end
 				if not accept_target_species( species ) then
-					print("Rejecting the species.")
-					print( string.format("species: %d, 0x%02X;", species, species ) )
+					print(string.format("Rejecting the %s, species %d.", species_number_dex[ species ], species )) --print("Rejecting the species.") --print( string.format("species: %d, 0x%02X;", species, species ) )
 					savestate.load( state )
 				else
-					print(string.format("Found species %d.", species ))
+					print(string.format("Found a %s, species %d.", species_number_dex[ species ], species )) --print(string.format("Found species %d.", species ))
 					advance( 300 )
 					break
 				end
@@ -3710,8 +2386,7 @@ function smash()
 				print("Rejecting the spread.")
 				print_IS( IS_ATKDEF, IS_SPDSPC )
 			else
-				print("Rejecting the species.")
-				print( string.format("species: %d, 0x%02X;", species, species ) )
+				print(string.format("Rejecting the %s, species %d.", species_number_dex[ species ], species )) --print("Rejecting the species.") --print(string.format("%s, species: %d;", species_number_dex[ species ], species )) --print( string.format("species: %d, 0x%02X;", species, species ) )
 			end
 			savestate.load( state )
 		end
@@ -3757,7 +2432,7 @@ function headbutt()
 				print_IS( IS_ATKDEF, IS_SPDSPC )
 				savestate.load( state )
 			else
-				print(string.format("Rejecting species %d.", species ))
+				print(string.format("Rejecting the %s, species %d.", species_number_dex[ species ], species )) --print(string.format("Rejecting species %d.", species ))
 				savestate.load( state )
 			end
 		end
@@ -3908,14 +2583,19 @@ function hold() --get_held()
 			advance( 500 )
 			item = memory.readbyte( address_item )
 			if accept_item( item ) then
-				print(string.format("Found the item 0x%02X on species %d.", item, species ))
+				print(string.format("Found a %s, item 0x%02X, on a %s, species %d.", item_number_index_item[ item ], item, species_number_dex[ species ], species )) --print(string.format("Found the item 0x%02X on species %d.", item, species ))
 				savestate.save( state )
 				return
 			end
-			print(string.format("Rejected species %d with the item 0x%02X.", species, item ))
+			if item ~= 0x00 then
+				print(string.format("Rejecting the %s, species %d, with a %s, item 0x%02X.", species_number_dex[ species ], species, item_number_index_item[ item ], item ))
+			else
+				print(string.format("Rejecting the %s, species %d, with %s", species_number_dex[ species ], species, item_number_index_item[ item ] ))
+			end
+			--print(string.format("Rejected species %d with the item 0x%02X.", species, item ))
 			savestate.load( state )
 		else
-			print(string.format("Rejecting species %d.", species ))
+			print(string.format("Rejecting the %s, species %d.", species_number_dex[ species ], species )) --print(string.format("Rejecting species %d.", species ))
 			savestate.load( state )
 		end
 		emu.frameadvance()
@@ -4020,7 +2700,7 @@ function raikouenteisuicune()
 		species = memory.readbyte( address_species_roamer )
 		if species ~= 243 and species ~= 244 and species ~= 245 or not accept_target_species( species ) then
 			if species ~= 0 then
-				print(string.format("Rejecting species %d.", species ))
+				print(string.format("Rejecting the %s, species %d.", species_number_dex[ species ], species )) --print(string.format("Rejecting species %d.", species ))
 			end
 			savestate.load( state )
 			press( { down = true }, 10 )
@@ -4048,7 +2728,7 @@ function raikouenteisuicune()
 				species = memory.readbyte( address_species_roamer )
 				if species ~= 243 and species ~= 244 and species ~= 245 or not accept_target_species( species ) then
 					if species ~= 0 then
-						print(string.format("Rejecting species %d.", species ))
+						print(string.format("Rejecting the %s, species %d.", species_number_dex[ species ], species )) --print(string.format("Rejecting species %d.", species ))
 					end
 					savestate.load( state )
 					press( { down = true }, 10 )
@@ -4185,7 +2865,7 @@ function yellowmew() -- Preferably catch level-5 flawless mews [for this growl t
 		print_IS( IS_ATKDEF, IS_SPDSPC )
 		savestate.load( state )
 	end
-end
+end -- This routine much like the gengar one is essentially just another glitch routine. And while the very similar RGB-only gengar mode is to be removed from the 2nd version of the script, this mode may remain and be improved, as you can catch mews in Y much earlier than in RGB in Viridian Forest via this glitch with two escape ropes, Yellow's Viridian Forest's penultimate bug catcher with the level-8 caterpie and metapod and Mt. Moon's fossils' super nerd with his level-12 koffing for its SPC stat of 21.
 
 function gengar()
 	if game ~= "RGBY" then
@@ -4326,6 +3006,14 @@ main()
 --	kvpb.fr
 --	https://x.com/ktgwkvpb
 --	https://github.com/kvpb
+--
+--	Hey.
+--	
+--	It's Karl. I coded this script. I hope it serves you well. I wish I had all of this--cart readers and writers, emulators with the Lua stand-alone interpreter, my script, cross-border e-commerce proxy shopping services--back in the early naughts. I know I would've liked playing these games even more with those. None of it happened unfortunately. But although we didn't get it, we made it for you, so you can enjoy playing these games with your kids more than us. Will you be a shiny hunter, competitive trainer or breeder? You decide. I hope you enjoy it. I have to go study hard from 09.07.2026 to 05.31.2027. If you need to be helped to use this script, someone else from a Discord on the Internet might know how to do it, or just ask an 'AI'--ChatGPT, Gemini, whatever--to explain you how to use it.
+--	
+--	Have fun.
+--	
+--	Karl
 
 --	Copyright 2022, 2023, 2024, 2025, 2026 Karl Vincent Pierre Bertin AKA Karl Thomas George West
 --
