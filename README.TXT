@@ -1,5 +1,6 @@
 Caution. These RNG manipulation utilities will not make you win seven million seven hundred seventy-seven thousand seven hundred seventy-seven bucks IRL, nor a house in Hawaii nor a motorway slip road. Deal with it.
 Attention. Ces utilities de manipulation du RNG ne vous feront pas gagner sept millions sept cent soixante-dix-sept mille sept cent soixante-dix-sept balles en vrais dollars IRL, ni une baraque à Hawaï ni une bretelle d'autoroute. Démerdez-vous avec ça.
+Achtung. Diese Dienstprogramme zur RNG-Manipulation verhelfen Ihnen IRL weder zu sieben Millionen siebenhundertsiebenundsiebzigtausendsiebenhundertsiebenundsiebzig Mäusen in echten Dollar, noch zu einem Haus auf Hawaii noch zu einer Autobahnauffahrt. Finden Sie sich damit ab.
 
                   Karl Vincent Pierre Bertin `kvpb`'s
                        Thomas  George West   `ktgw`
@@ -29,6 +30,63 @@ S E T   U P
   0  Install VisualBoyAdvance-ReRecording 23.6 (SVN 480)^, and ensure the Windows notepad^ is installed.
   1  Get my G1 & G2 RNG manipulation utilities^, take the Lua file^ from the archive, and put them in the folder for Lua scripts of VBA-RR^.
   2  Launch VBA-RR^, start its Lua stand-alone interpreter^, browse the folder for the script, and edit its 'parameter' variables^, or run it at the right moment of the game.
+
+U S E   N O W   F A S T 
+            use now fast
+
+     id
+     Want a particular ID No.? Set TID_target to this ID No. or list_TID_target to several, and set mode to "id"--with the quotes--on line 1. Run the script with the cursor over 'NEW GAME'.
+
+     get
+     Wanna get a flawless or shiny gift 'mon, for example a starter? Set DV_target to { "flawless" } or { "color" }--with the braces and the quotes--and set mode to "get"--with the quotes--on line 1. Run the script right on the last interaction prior to the calculation of the 'mon's individual strengths---in RGBY the nickname prompt with the cursor over 'NO' or 'END' in the nickname prompt. The relevant lines of the script are commented with all common target individual strength spreads.
+
+     catch
+     Wanna catch that wild 'mon? Set mode to "catch"--with the quotes--on line 1. Run the script with the cursor on the ball you'll throw in RGBY or on 'USE' in GSC in the menu.
+
+     breed
+     Wanna breed a flawless or shiny 'mon egg? Set DV_target to { "flawless" } or { "color" }--with the braces and the quotes--and set mode to "breed"--with the quotes--on line 1. Run the script at the end of the first line of the dialogue after the selection of the second parent at the day care, before you hear the 'mon cry. The relevant lines of the script are commented with all common target individual strength spreads.
+
+     encounter
+     Wanna encounter a flawless or shiny wild 'mon in the grass or a cave? Set DV_target to { "color" } for any shiny 'mon or { "flawless" } for a flawless 'mon, optionally also set species_target or list_species_target to the 'dex number of your species of choice, and set mode to "encounter"--with the quotes--on line 1. Stand on a wild-encounter tile, and run the script. The relevant lines of the script are commented with all common target individual strength spreads.
+
+     fish
+     Wanna fish a competitive shiny wild 'mon in the water? Set DV_target to { "flawless" } or { "color" }--with the braces and the quotes--optionally also set species_target or list_species_target to the 'dex number of your species of choice, and set mode to "fish"--with the quotes--on line 1. Run the script with the cursor over a rod in RGBY or 'USE' on the rod in the menu in GSC. The relevant lines of the script are commented with all common target individual strength spreads.
+
+     smash
+     Wanna encounter a flawless or shiny 'mon from a rock? Set DV_target to { "flawless" } or { "color" }--with the braces and the quotes--optionally also set species_target or list_species_target to the 'dex number of your species of choice, and set mode to "smash"--with the quotes--on line 1. Run the script on the last stable state on the last string of text of the dialog after action on the rock. The relevant lines of the script are commented with all common target individual strength spreads.
+
+     headbutt
+     Wanna encounter a flawless or shiny 'mon from a tree? Set DV_target to { "flawless" } or { "color" }--with the braces and the quotes--optionally also set species_target or list_species_target to the 'dex number of your species of choice, and set mode to "headbutt"--with the quotes--on line 1. Run the script on the last stable state on the last string of text of the dialog after action on the tree. The relevant lines of the script are commented with all common target individual strength spreads.
+
+     trade
+     Want to trade NPCs their flawless or shiny 'mons? Set DV_target to { "flawless" } or { "color" }--with the braces and the quotes--and set mode to "trade"--with the quotes--on line 1. Run the script on the last stable state on the last string of text of the dialog before the cutscene, around the link cable text. The relevant lines of the script are commented with all common target individual strength spreads.
+
+     battle
+     Wanna battle a flawless or shiny 'stationary' 'mon, i.e. a snorlax, a zapdos, a lapras, a ho-oh...? Set DV_target to { "flawless" } or { "color" }--with the braces and the quotes--and set mode to "battle"--with the quotes--on line 1. Run at the end of the cry, or the last stable state right before the battle. The relevant lines of the script are commented with all common target individual strength spreads.
+
+     hold
+     Want a wild 'mon to hold a specific item? Set item_target on line 34 or list_item_target on line 35--with the commas and braces--to the hexadecimal item index numbers of your items of choice, optionally also set species_target or list_species_target to the 'dex number of your species of choice, [but more simply just set species_target, as list_item_target is set to all of the most useful item index numbers already,] and set mode to "hold"--with the quotes--on line 1. Stand on a wild-encounter tile, and run the script. The relevant lines of the script are commented with all common target individual strength spreads.
+
+     unown
+     Wanna encounter a specific flawless or shiny unown? Set letter_unown_target to your capital letter of choice--with the quotes--or set DV_target to { "flawless" } or { "color" }--with the braces and the quotes--and set mode to "unown"--with the quotes--on line 1. Run the script in the underground of the Ruins of Alph. The relevant lines of the script are commented with all common target individual strength spreads.
+
+     raikouenteisuicune
+     Want a flawless or a shiny runaway, in GS raikou, entei or suicune, in C raikou or entei? Set DV_target to { "flawless" } or { "color" }--with the braces and the quotes--and set mode to "raikouenteisuicune"--with the quotes--on line 1. Run the script on the last stable state before the first encounter with raikou, entei and suicune. The relevant lines of the script are commented with all common target individual strength spreads.
+
+     suicune
+     Want a flawless or shiny suicune in Crystal Version? Set DV_target to { "flawless" } or { "color" }--with the braces and the quotes--and set mode to "suicune"--with the quotes--on line 1. Run the script on the last stable state before the battle with suicune. The relevant lines of the script are commented with all common target individual strength spreads.
+
+     count
+     How much do you have to walk for the next egg? Set mode to "count"--with the quotes--on line 1. Run the script at any moment after the selection of the second parent with two compatible 'mons in day care.
+
+     lay
+     Wanna get an egg readied? Set mode to "lay"--with the quotes--on line 1. Run the script after the dialog of the selection of the second parent with two compatible 'mons in day care.
+
+     hatch
+     Wanna hatch eggs? Set mode to "hatch"--with the quotes--on line 1. Run the script in a state of free movement after collection of the egg with the egg in the party.
+
+     walktogether
+     Wanna bond with your 'mons? Set mode to "walktogether"--with the quotes--on line 1. Run the script in a state of free movement with the target 'mon first in the party.
 
 U S E 
    use
@@ -547,7 +605,7 @@ V A R I A B L E S   ' D E   P A R A M È T R E '
 R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T ) 
 
      id
-     ... Fait le script vous chercher des ID No. cibles.
+     ... Vous fait obtenir des ID No. cibles.
      ... S'arrête à l'obtention d'un ID No. cible.
      Le script en ce mode est exécuté avec le curseur sur 'NOUVEAU JEU'.
      variables de paramètre du mode :
@@ -555,8 +613,8 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
           list_TID_target ;
 
      get
-     ... Fait le script recevoir des 'mons avec des répartitions des SI cibles.
-     ... S'arrête à l'obtention d'une répartition des SI cibles.
+     ... Vous fait recevoir des 'mons avec des répartitions des SI cibles.
+     ... S'arrête à l'obtention d'une répartition de SI cible.
      Le script en ce mode est exécuté au dernier état stable avant le don du 'mon ou plutôt le calcul de sa répartition de SI dans RVBJ à la demande de surnom avec le curseur sur 'NON'.
      variables de paramètre du mode :
           DV_target,
@@ -568,15 +626,15 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
           DV_SPC ;
 
      catch
-     ... Fait le script capturer le 'mon sauvage.
-     ... S'arrête après capture du 'mon sauvage.
+     ... Vous fait capturer le 'mon sauvage.
+     ... S'arrête à la capture du 'mon sauvage.
      Le script en ce mode est exécuté avec le curseur sur une ball dans RVBJ ou 'UTIL' sur une ball dans OAC, avant que vous ne la lanciez.
      variables de paramètre du mode : flag_pause_uponhit ;
 
      breed
      ... Fait le script faire se reproduire des 'mons pour des œufs avec des répartitions de SI cibles.
      ... Fonctionne avec OAC seulement.
-     ... S'arrête après calcul de la répartition des SI cibles.
+     ... S'arrête après calcul de la répartition de SI cible.
      Le script en ce mode est exécuté à la fin du premier texte du dialogue juste avant le cri du 'mon après l'écran d'équipe pour la sélection du deuxième parent à la pension.
      variables de paramètre du mode :
           DV_target,
@@ -588,8 +646,8 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
           DV_SPC ;
 
      encounter
-     ... Fait le script marcher vers des espèces cibles et des répartitions de SI.
-     ... S'arrête après calcul de l'espèce cible et de la répartition de SI.
+     ... Fous fait marcher vers des espèces cibles et des répartitions de SI.
+     ... S'arrête à l'apparition d'une espèce cible avec une répartition de SI cible.
      Le script en ce mode est exécuté sur une case de rencontre de sauvage. Le bot vous fait marcher vers la droite d'abord dans OAC.
      variables de paramètre du mode :
           species_target,
@@ -605,8 +663,8 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
           code_direction ;
 
      fish
-     ... Fait le script pêcher certaines espèces avec certaines répartitions de SI.
-     ... S'arrête après apparition de l'espèce cible et calcul de la répartition de SI cible.
+     ... Vous fait pêcher certaines espèces avec certaines répartitions de SI.
+     ... S'arrête à la remontée d'une espèce cible avec une répartition de SI cible.
      Le script en ce mode est exécuté avec le curseur sur une canne dans le menu dans RVBJ ou 'UTIL' sur une canne dans le menu dans OAC.
      variables de paramètre du mode :
           species_target,
@@ -621,9 +679,9 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
           DV_SPC ;
 
      smash
-     ... Fait le script 'casser des rochers' pour certaines espèces et répartitions de SI.
+     ... Vous fait 'casser des rochers' pour certaines espèces et répartitions de SI.
      ... Fonctionne avec OAC seulement.
-     ... S'arrête après calcul de l'espèce cible et de la répartition de SI.
+     ... S'arrête à l'obtention d'une espèce cible avec une répartition de SI cible.
      Le script en ce mode est exécuté au dernier état stable à la fin du dialogue après action sur le rocher.
      variables de paramètre du mode :
           species_target,
@@ -638,9 +696,9 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
           DV_SPC ;
 
      headbutt
-     ... Fait le script donner des coups de tête aux arbres avec certaines espèces et répartitions de SI.
+     ... Vous fait 'cogner des arbres' pour certaines espèces et répartitions de SI.
      ... Fonctionne avec OAC seulement.
-     ... S'arrête après calcul de l'espèce cible et de la répartition de SI.
+     ... S'arrête à l'obtention d'une espèce cible avec une répartition de SI cible.
      Le script en ce mode est exécuté au dernier état stable à la fin du dialogue après action sur l'arbre.
      variables de paramètre du mode :
           species_target,
@@ -655,9 +713,9 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
           DV_SPC ;
 
      trade
-     ... Fait le script échanger avec des PNJ du jeu des 'mons avec certaines répartitions de SI.
-     ... Fonctionne avec RVBJ seulement. Le mode pourrait aussi marcher avec OAC, mais le désassemblage de la ROM de Cristal révèle une macro avec le surnom, les SI, l'objet, l'ID de dresseur original et le nom du dresseur d'origine, puis 2 octets de SI pour chaque 'mon : les SI des 'mons des PNJ sont pré-définis dans OAC.
-     ... S'arrête après obtention de la répartition des SI cibles.
+     ... Vous fait échanger avec des PNJ du jeu leurs 'mons avec certaines répartitions de SI.
+     ... Fonctionne avec RVBJ seulement. Le mode pourrait aussi marcher avec OAC, mais le désassemblage de la ROM de Cristal révèle une macro avec le surnom, les SI, l'objet, l'ID No. et le nom du dresseur d'origine, puis 2 octets de SI pour chaque 'mon : les SI des 'mons des PNJ sont pré-définis dans OAC.
+     ... S'arrête à l'obtention d'une répartition de SI cible.
      Le script en ce mode est exécuté au dernier état stable à la fin du dialogue avant la cinématique vers le texte du 'câble link' [putain, Nintendo, traduisez correctement les blazes de vos produits, bordel, on a sorti le dictionnaire de l'Académie française et le Littré avec le trésor de la langue française, merde, c'est pas pour rien, oh, c'est 'câble de liaison', hein, bande de cas soc].
      variables de paramètre du mode :
           DV_target,
@@ -669,8 +727,8 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
           DV_SPC ;
 
      battle
-     ... Fait le script combattre des 'mons statiques avec certaines répartitions de SI.
-     ... S'arrête après obtention de la répartition des SI cibles.
+     ... Vous fait des 'mons statiques avec certaines répartitions de SI.
+     ... S'arrête à l'obtention d'une répartition de SI cible.
      Le script en ce mode est exécuté à la fin du dialogue du cri ou au dernier état stable avant le combat.
      variables de paramètre du mode :
           DV_target,
@@ -683,9 +741,9 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
           flag_lapras ;
 
      hold
-     ... Fait le script rencontrer des 'mons sauvages avec certains objets.
+     ... Vous fait rencontrer des 'mons sauvages avec certains objets cibles.
      ... Fonctionne avec OAC seulement.
-     ... S'arrête après apparition de l'objet tenu cible.
+     ... S'arrête à l'apparition d'un 'mon avec l'objet cible.
      Le script en ce mode est exécuté sur une case de rencontre sauvage.
      variables de paramètre du mode :
           item_target,
@@ -694,10 +752,10 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
           list_species_target ;
 
      unown
-     ... Fait le script rencontrer des zarbis avec certaines lettres et répartitions de SI.
+     ... Vous fait rencontrer des zarbis avec certaines lettres et répartitions de SI.
      ... Fonctionne avec OAC seulement.
-     ... S'arrête après calcul de la lettre cible et de la répartition de SI.
-     Le script en ce mode est exécuté sur une case de rencontre sauvage dans une zone exclusivement peuplée de zarbis, à savoir le sous-sol des ruines d'Alpha.
+     ... S'arrête à l'apparition d'une lettre cible avec une répartition de SI cible.
+     Le script en ce mode est exécuté sur une case de rencontre sauvage, en fait le sous-sol des ruines d'Alpha.
      variables de paramètre du mode :
           letter_unown_target,
           DV_target,
@@ -709,10 +767,10 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
           DV_SPC ;
 
      raikouenteisuicune
-     ... Fait le script relâcher les roamers avec certaines répartitions de SI.
-     ... Fonctionne pour un suicune avec Or et Argent seulement, pour un raikou et un entei avec Cristal uniquement.
-     ... S'arrête après obtention de la répartition des SI cibles.
-     Le script en ce mode est exécuté au dernier état stable avant la génération de raikou, d'entei et de suicune.
+     ... Vous fait rencontrer les runaways avec certaines répartitions de SI.
+     ... Fonctionne pour un suicune avec les Version Or et Version Argent seulement, pour un raikou et un entei avec la Version Cristal uniquement.
+     ... S'arrête à l'apparition d'un runaway avec une répartition de SI cible.
+     Le script en ce mode est exécuté au dernier état stable avant la génération de raikou, d'entei ou de suicune, c'est-à-dire avant la 1ère rencontre avec eux, pas dans le sous-sol de la tour.
      variables de paramètre du mode :
           DV_target,
           DV_ATKDEF,
@@ -723,9 +781,9 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
           DV_SPC ;
 
      suicune
-     ... Fait le script combattre un suicune avec certaines répartitions de SI.
+     ... Vous fait combattre des suicunes avec certaines répartitions de SI.
      ... Fonctionne avec Cristal seulement.
-     ... S'arrête après obtention de la répartition des SI cibles.
+     ... S'arrête à l'obtention d'une répartition de SI cible.
      Le script en ce mode est exécuté au dernier état stable avant le combat avec un suicune.
      variables de paramètre du mode :
           DV_target,
@@ -739,7 +797,7 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
      glitch
      ... Fait le script exploiter le long-range trainer-fly glitch avec des répartitions des SI cibles.
      ... Fonctionne avec RVBJ seulement.
-     ... S'arrête après calcul de la répartition des SI cibles.
+     ... S'arrête à l'obtention d'une répartition de SI cible.
      Le script en ce mode est exécuté sur le menu avant le combat.
      variables de paramètre du mode :
           species_target,
@@ -754,9 +812,9 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
           DV_SPC ;
 
      yellowmew
-     ... Fait le script rencontrer un mew avec une certaine répartition de SI dans Jaune.
-     ... Fonctionne avec Jaune seulement.
-     ... S'arrête après obtention de la répartition des SI cibles.
+     ... Vous fait rencontrer des mews avec certaines répartitions de SI dans la Version Jaune.
+     ... Fonctionne avec la Version Jaune seulement.
+     ... S'arrête à l'obtention d'une répartition de SI cible.
      Le script en ce mode est exécuté sur le menu avant le combat.
      variables de paramètre du mode :
           DV_target,
@@ -768,9 +826,9 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
           DV_SPC ;
 
      gengar
-     ... Fait le script combattre un ectoplasma avec certaines répartitions de SI via le mew glitch dans la forêt de Jade.
+     ... Vous fait combattre des ectoplasmas avec certaines répartitions de SI via le mew glitch dans la forêt de Jade.
      ... Fonctionne avec RVB seulement.
-     ... S'arrête après obtention de la répartition des SI cibles.
+     ... S'arrête à l'obtention d'une répartition de SI cible.
      Le script en ce mode est exécuté sur le menu avant le combat.
      variables de paramètre du mode :
           DV_target,
@@ -782,9 +840,9 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
           DV_SPC ;
 
      mewtwomoltres
-     ... Fait le script combattre un sulfura avec 131 de SPC pour un mewtwo via le long-range trainer glitch.
+     ... Vous fait combattre des sulfuras avec 131 de SPC pour des mewtwos via le long-range trainer glitch.
      ... Fonctionne avec RVBJ seulement.
-     ... S'arrête après obtention de la répartition des SI cibles.
+     ... S'arrête à l'obtention d'une répartition de SI cible.
      Le script en ce mode est exécuté à la fin du dialogue du cri avant le combat avec un sulfura.
      variables de paramètre du mode :
           species_target,
@@ -797,15 +855,15 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
           DV_SPC ;
 
      count
-     ... Fait le script afficher un compteur de pas jusqu'à la ponte d'un œuf à la pension.
+     ... Fait le script faire VBA-RR imprimer un compteur de pas jusqu'à la ponte d'un œuf à la pension.
      ... Fonctionne avec OAC seulement.
-     ... Compte le nombre de pas jusqu'à un œuf à la pension.
+     ... Compte le nombre de pas pour un œuf à la pension.
      Le script en ce mode est exécuté à tout moment après la sélection du deuxième parent avec deux 'mons compatibles à la pension.
 
      lay
      ... Fait le script vous faire marcher jusqu'à la ponte d'un œuf.
      ... Fonctionne avec OAC seulement.
-     ... S'arrête après préparation d'un œuf.
+     ... S'arrête à la génération d'un œuf.
      Le script en ce mode est exécuté après le dialogue de sélection du deuxième parent avec deux 'mons compatibles à la pension à l'état de dialogue de la pension avant vérification de l'œuf.
      variables de paramètre du mode :
           n_step_potentialegg_target,
@@ -822,18 +880,20 @@ R O U T I N E S   D ' A C T I O N   ( M O D E S   D U   S C R I P T )
      walktogether
      ... Fait le script vous faire marcher jusqu'un certain niveau d'amitié du 'mon.
      ... Fonctionne avec J pour le pikachu de départ uniquement et OAC seulement.
-     ... S'arrête après atteinte de la valeur d'amitié cible.
+     ... S'arrête à l'atteinte de la valeur d'amitié cible.
      Le script en ce mode est exécuté dans un état de déplacement libre avec le 'mon cible en premier dans l'équipe.
      variables de paramètre du mode :
           friendship_target,
           direction_lateral ;
 
 A L S O   T H A N K 
-          a l s o   t h a n k : 
+          A l s o   t h a n k : 
 R E M E R C I E Z   A U S S I 
-               r e m e r c i e z   a u s s i : 
--  zep715,
--  wwwwwwzx,
+               R e m e r c i e z   a u s s i : 
+D A N K E N   S I E   I H N E N   E B E N F A L L S 
+                          D a n k e n   S i e   i h n e n   e b e n f a l l s :
+-  zep715 for RBYLua,
+-  wwwwwwzx for GSCLua,
 -  Collector Togamis,
 -  zaksabeast,
 -  Real96 and
@@ -842,6 +902,7 @@ for they contributed to my project directly or indirectly, wittingly or
 unbeknownst to them.
 comme ils ont contribué à mon projet directement ou indirectement,
 volontairement ou non.
+da sie direkt oder indirekt, wissentlich oder unwissentlich zu meinem Projekt beigetragen haben.
 
                                               ^J:                       
                              ^   .:^^.      ^?7.                        
@@ -874,3 +935,13 @@ ___________________________________
 ^	rgbygscprngmanipulationutilities/pokemongoldandsilverandcrystalversionbestindividualstrengthspreads/
 ^	rgbygscprngmanipulationutilities/calculatergbywildmondv/
 ^	rgbygscprngmanipulationutilities/long-rangetrainerescapeglitchmonbestdvspreads/
+^	https://bulbapedia.bulbagarden.net/wiki/List_of_Japanese_event_Pok%C3%A9mon_distributions_in_Generation_I#Game_Freak_Mew
+^	https://bulbapedia.bulbagarden.net/wiki/List_of_European_language_event_Pok%C3%A9mon_distributions_in_Generation_I#Nintendo_UK's_Pok%C3%A9mon_Festival_Mew
+^	rgbygscprngmanipulationutilities/VisualBoyAdvance-ReRecording/catchmodestartposition.png
+^	rgbygscprngmanipulationutilities/VisualBoyAdvance-ReRecording/breedmodestartposition.png
+^	rgbygscprngmanipulationutilities/VisualBoyAdvance-ReRecording/encountermodestartposition.png
+^	rgbygscprngmanipulationutilities/VisualBoyAdvance-ReRecording/battlemodestartposition.png
+^	rgbygscprngmanipulationutilities/VisualBoyAdvance-ReRecording/holdmodestartposition.png
+^	rgbygscprngmanipulationutilities/VisualBoyAdvance-ReRecording/raikouenteisuicunemodestartposition.png
+^	rgbygscprngmanipulationutilities/VisualBoyAdvance-ReRecording/suicunemodestartposition.png
+^	rgbygscprngmanipulationutilities/VisualBoyAdvance-ReRecording/glitchmodestartposition.png
